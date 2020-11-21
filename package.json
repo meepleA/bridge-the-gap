@@ -1,0 +1,23 @@
+{
+  "name": "ba_game",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "webpack --config webpack.config.prod.js",
+    "dev": "webpack --config webpack.config.dev.js --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/meepleA/BA-game.git"
+  },
+  "author": "Lynn Severing",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/meepleA/BA-game/issues"
+  },
+  "homepage": "https://github.com/meepleA/BA-game#readme",
+  "devDependencies": {
+    "webpack": "^5.6.0",
+    "webpack-cli": "^4.2.0"
+  }
+}
