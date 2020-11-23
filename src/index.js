@@ -1,3 +1,5 @@
-import { writeParagraph } from "./Test";
+import { config } from "./phaserConfig";
 
-writeParagraph("look at me");
+var game = new Phaser.Game(config);
+
+
