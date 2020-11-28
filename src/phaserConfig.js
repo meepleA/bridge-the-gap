@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { Level } from "./Level";
+import { SetCompilation } from "./SetCompilation";
 
 export const config = {
     type: Phaser.AUTO,
@@ -12,5 +13,5 @@ export const config = {
             debug: false
         }
     },
-    scene: Level
+    scene: [SetCompilation, Level]
 };

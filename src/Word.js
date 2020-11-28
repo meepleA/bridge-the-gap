@@ -13,13 +13,14 @@ export class Word extends Phaser.GameObjects.Text {
         });
         this.on('pointerover', () => { this.setColor("RED"); });
         this.on('pointerout', () => { this.setColor("BLACK"); });
+        
         this.defaultDist = -1;
         this.partnerDist = [];
         this.fillPartnerDist(words);
         this.isHighlighted = false;
     }
 
-    // später auf server?
+    // später auf server, hier anfrage
     fillPartnerDist(twoDArray){
         twoDArray.forEach(element => {
             if(element[0] == this.text){

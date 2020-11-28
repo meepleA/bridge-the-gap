@@ -6,27 +6,32 @@ import { Word } from "./Word";
 
 export class Level extends Scene {
 
-    constructor(pillarNumber) {
-        super();
+    constructor() {
+        super({key:"level"});
 
         // loggingValues = [word1, word2, distance, error]
         this.loggingValues = [];
         this.pairDist = [];
         // server, scenen manager
-        this.hardCodeWordPairs();
         this.playerID;
 
         this.playerWordSet = [];
         // vorauswahl
-        this.words = this.getAllWithouDoubles(this.pairDist);
+        this.words = [];
 
-        this.numberOfPillars = 2;
+        this.numberOfPillars;
         this.selectedWord;
         this.pillars = [];
         this.bridgeParts = [];
         this.bridgeLengths = [1, 1, 3];
         this.message;
         this.nextLvlButton;
+    }
+
+    init(data){
+        this.pairDist = data.pairDist;
+        this.words = data.wordSet;
+        this.numberOfPillars = data.pillarNo;
     }
 
     preload() {
@@ -62,7 +67,7 @@ export class Level extends Scene {
         this.lemmings.children.iterate(function (child) {
 
             if (child.body.position.y >= 600) {
-                child.body.reset(30, 280);
+                child.body.reset(30, 290);
                 child.setVelocityX(110);
             }
         });
@@ -110,7 +115,7 @@ export class Level extends Scene {
         // Erstellung in Vorauswahl, Anzeige hier
         var offset = 20;
         for (var i = 0; i < this.words.length; i++) {
-            this.playerWordSet.push(new Word(this, offset, 25, this.words[i], this.pairDist));
+            this.playerWordSet.push(new Word(this, offset, 25, this.words[i].text, this.pairDist));
             offset += this.playerWordSet[i].displayWidth + 50;
         }
     }
@@ -248,24 +253,5 @@ export class Level extends Scene {
         } else {
             this.nextLvlButton.visible = false;
         };
-    }
-
-    // server
-    hardCodeWordPairs() {
-        this.pairDist.push(["Tasse", "Streichholz", "5"]);
-        this.pairDist.push(["Tee", "Tasse", "0"]);
-        this.pairDist.push(["Kochtopf", "Tee", "0"]);
-    }
-    // vorauswahl
-    getAllWithouDoubles(twoDArray) {
-        var finalArray = [];
-        twoDArray.forEach(elem => {
-            for (var i = 0; i < 2; i++) {
-                if (!finalArray.includes(elem[i])) {
-                    finalArray.push(elem[i]);
-                }
-            }
-        });
-        return finalArray;
     }
 }
