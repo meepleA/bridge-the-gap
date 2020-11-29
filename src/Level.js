@@ -19,11 +19,11 @@ export class Level extends Scene {
         // vorauswahl
         this.words = [];
 
-        this.numberOfPillars;
         this.selectedWord;
+        this.givenPillars;
+        this.givenBridgeParts;
         this.pillars = [];
         this.bridgeParts = [];
-        this.bridgeLengths = [1, 1, 3];
         this.message;
         this.nextLvlButton;
     }
@@ -31,7 +31,8 @@ export class Level extends Scene {
     init(data){
         this.pairDist = data.pairDist;
         this.words = data.wordSet;
-        this.numberOfPillars = data.pillarNo;
+        this.givenPillars = data.pillarArr;
+        this.givenBridgeParts = data.bridgePartArr;
     }
 
     preload() {
@@ -79,24 +80,21 @@ export class Level extends Scene {
         this.grounds.create(0, 300, 'cliff').setOrigin(0, 0);
         this.grounds.create(700, 300, 'cliff').setOrigin(0, 0);
 
-        // instantiate pillars and bridge parts
-        this.pillars[0] = new Pillar(this, 100, 300);
-        this.pillarWidth = this.pillars[0].displayWidth;
-        this.bridgeParts.push(new Bridge(this, 100 + this.pillarWidth, 300, this.bridgeLengths[0]));
+        // instantiate pillars and bridge parts 
+        this.givenPillars.forEach(element => {
+            this.pillars.push(new Pillar(this, element.x, element.y));
+        });
 
-        for(var i=1; i<this.bridgeLengths.length; i++){
-            var xPos = this.pillarWidth + this.bridgeParts[i-1].x + this.bridgeParts[i-1].displayWidth;
-            this.bridgeParts.push(new Bridge(this, xPos, 300, this.bridgeLengths[i]));
-        }
-        
-        for (var i = 1; i <= this.numberOfPillars; i++) {
-            this.pillars[i] = new Pillar(this, this.bridgeParts[i].x-this.pillarWidth, 300);
-        }
-        this.pillars.push(new Pillar(this, 700 - this.pillarWidth, 300));    
+        this.givenBridgeParts.forEach(element => {
+            this.bridgeParts.push(new Bridge(this, element.x, element.y, element.dist));
+        });
 
         // add pillars and bridge parts to grounds group and set their physics
         this.pillars.forEach(pillar => {
             this.grounds.add(pillar);
+            pillar.setInteractive().on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+                this.changeSelectedPillar(pillar);
+            });
         });
         this.bridgeParts.forEach(part => {
             this.grounds.add(part);
@@ -111,8 +109,7 @@ export class Level extends Scene {
             element.body.enable = false;
         });  
 
-        // display the player's word set
-        // Erstellung in Vorauswahl, Anzeige hier
+        // create player's word set
         var offset = 20;
         for (var i = 0; i < this.words.length; i++) {
             this.playerWordSet.push(new Word(this, offset, 25, this.words[i].text, this.pairDist));
@@ -126,6 +123,7 @@ export class Level extends Scene {
         this.nextLvlButton.visible = false;
         this.nextLvlButton.setInteractive().on('pointerdown', () => {
             // rückgabe an scene manager
+            // this.scene.start("preview");
         });
         this.nextLvlButton.on('pointerover', () => { this.nextLvlButton.setColor("#0046aa"); });
         this.nextLvlButton.on('pointerout', () => { this.nextLvlButton.setColor("BLACK"); });
@@ -174,6 +172,7 @@ export class Level extends Scene {
         this.pillars.forEach(pillar => {
             if (pillar.enteredWord == null) {
                 pillar.setTexture('pillarHighlight');
+                
             }
         });
     }

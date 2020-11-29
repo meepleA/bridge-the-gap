@@ -4,8 +4,9 @@ import { Image } from "phaser";
 export class Bridge extends Phaser.GameObjects.Image {
     constructor(scenep, x, y, distp) {
         super(scenep, x, y, 'bridge');
-        scenep.add.existing(this).setOrigin(0, 0);
 
+        scenep.add.existing(this).setOrigin(0, 0);
+    
         this.dist = distp;
         this.visible = false;
         

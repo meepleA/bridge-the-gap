@@ -3,7 +3,7 @@ import { PoolWord } from "./PoolWord";
 
 export class SetCompilation extends Scene {
 
-    constructor(pillarNumber) {
+    constructor() {
         super({key:"set"});
         
         // server, scenen manager
@@ -15,11 +15,18 @@ export class SetCompilation extends Scene {
         this.pool = this.getAllWithouDoubles(this.allWords);
         this.pool.splice(20);
         this.poolWords = [];
+
+        this.pillars;
+        this.bridgeParts;
+    }
+
+    init(data){
+        this.pillars = data.pillarArr;
+        this.bridgeParts = data.bridgePartArr;
     }
 
     preload(){
         this.load.image('background', 'assets/background.png');
-        this.canvas = this.sys.game.canvas;
     }
 
     create(){
@@ -41,7 +48,7 @@ export class SetCompilation extends Scene {
         this.finishButton = this.add.text(600, 170, "Fertig", { font: "20px Quicksand", fill: "BLACK" });
         this.finishButton.setInteractive().on('pointerdown', () => {
             // zu level
-            this.scene.start("level", {pairDist: this.allWords, wordSet: this.set, pillarNo: 2});
+            this.scene.start("level", {pairDist: this.allWords, wordSet: this.set, pillarArr: this.pillars, bridgePartArr: this.bridgeParts});
         });
         this.finishButton.on('pointerover', () => { this.finishButton.setColor("#0046aa"); });
         this.finishButton.on('pointerout', () => { this.finishButton.setColor("BLACK"); });

@@ -10,10 +10,6 @@ export class Pillar extends Phaser.GameObjects.Image {
 
         this.enteredWord;
         this.isHighlighted = false;
-
-        this.setInteractive().on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-            this.scene.changeSelectedPillar(this);
-        });
     }
 
     // getWord(){
