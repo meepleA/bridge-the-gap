@@ -4,8 +4,8 @@ import { PoolWord } from "./PoolWord";
 export class SetCompilation extends Scene {
 
     constructor() {
-        super({key:"set"});
-        
+        super({ key: "set" });
+
         // server, scenen manager
         this.allWords = [];
 
@@ -17,16 +17,16 @@ export class SetCompilation extends Scene {
         this.bridgeParts;
     }
 
-    init(data){
+    init(data) {
         this.pillars = data.pillarArr;
         this.bridgeParts = data.bridgePartArr;
     }
 
-    preload(){
+    preload() {
         this.load.image('background', 'assets/background.png');
     }
 
-    create(){
+    create() {
         // server, scenen manager
         this.allWords = [];
         this.hardCodeWordPairs();
@@ -41,50 +41,55 @@ export class SetCompilation extends Scene {
         this.createPool();
     }
 
-    update(){
+    update() {
         // display the chosen word set
         var offset = 20;
         this.set.forEach(element => {
             element.setPosition(offset, 25);
             offset += element.displayWidth + 50;
         });
+
+        if(this.set.length == this.pillars.length){
+            this.finishButton.visible = true;
+        } else {
+            this.finishButton.visible = false;
+        }
     }
 
-    createButtons(){
+    createButtons() {
         this.finishButton = this.add.text(600, 170, "Fertig", { font: "20px Quicksand", fill: "BLACK" });
         this.finishButton.setInteractive().on('pointerdown', () => {
             // zu level
-            this.scene.start("level", {pairDist: this.allWords, wordSet: this.set, pillarArr: this.pillars, bridgePartArr: this.bridgeParts});
+            this.scene.start("level", { pairDist: this.allWords, wordSet: this.set, pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
         });
         this.finishButton.on('pointerover', () => { this.finishButton.setColor("#0046aa"); });
         this.finishButton.on('pointerout', () => { this.finishButton.setColor("BLACK"); });
+        this.finishButton.visible = false;
     }
 
-    createPool(){
+    createPool() {
         this.poolWords = [];
         this.pool.forEach(element => {
             this.poolWords.push(new PoolWord(this, 0, 0, element));
         });
         var x = 20;
         var y = 300;
-        console.log(this.poolWords.length);
         for (let i = 0; i < this.poolWords.length; i++) {
-            // console.log(this.poolWords[i].text);
             this.poolWords[i].setPosition(x, y);
             this.poolWords[i].setOriginals(x, y);
             x += this.poolWords[i].displayWidth + 50;
-            if(i+1 < this.poolWords.length && this.poolWords[i+1].displayWidth >= this.cameras.main.centerX*2-x-20){
+            if (i + 1 < this.poolWords.length && this.poolWords[i + 1].displayWidth >= this.cameras.main.centerX * 2 - x - 20) {
                 y += 50;
                 x = 20;
             }
         }
     }
 
-    selectWord(word){
-        if(this.set.includes(word)){
+    selectWord(word) {
+        if (this.set.includes(word)) {
             this.set.splice(this.set.indexOf(word), 1);
             word.setPosition(word.originalX, word.originalY);
-        } else {
+        } else if (this.set.length < this.pillars.length) {
             this.set.push(word);
         }
     }
