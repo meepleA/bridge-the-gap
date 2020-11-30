@@ -123,7 +123,8 @@ export class Level extends Scene {
         this.nextLvlButton.visible = false;
         this.nextLvlButton.setInteractive().on('pointerdown', () => {
             // rückgabe an scene manager
-            // this.scene.start("preview");
+            this.resetVariables();
+            this.scene.start('preview');
         });
         this.nextLvlButton.on('pointerover', () => { this.nextLvlButton.setColor("#0046aa"); });
         this.nextLvlButton.on('pointerout', () => { this.nextLvlButton.setColor("BLACK"); });
@@ -252,5 +253,21 @@ export class Level extends Scene {
         } else {
             this.nextLvlButton.visible = false;
         };
+    }
+
+    resetVariables(){
+        this.loggingValues = [];
+        this.pairDist = [];
+
+        this.playerWordSet = [];
+        // vorauswahl
+        this.words = [];
+
+        this.givenPillars = [];
+        this.givenBridgeParts = [];
+        this.pillars = [];
+        this.bridgeParts = [];
+        this.message = null;
+        this.nextLvlButton = null;
     }
 }

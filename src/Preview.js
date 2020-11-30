@@ -9,14 +9,14 @@ export class Preview extends Scene {
 
     constructor() {
         super({ key: "preview" });
-
+        
         this.pillars = [];
         this.bridgeParts = [];
         // TODO: random brückenlängen ermitteln
-        this.bridgeLengths = [1, 1, 3];
-        this.numberOfPillars = this.bridgeLengths.length - 1;
+        this.bridgeLengths = [];
+        this.numberOfPillars;
 
-        this.counter = 3;
+        this.counter;
         this.countdown;
     }
 
@@ -29,6 +29,12 @@ export class Preview extends Scene {
     }
 
     create() {
+        this.pillars = [];
+        this.bridgeParts = [];
+        this.bridgeLengths = [1, 1, 3];
+        this.numberOfPillars = this.bridgeLengths.length - 1;
+        this.counter = 3;
+
         this.add.image(0, 0, 'background').setOrigin(0, 0);
         this.createBridge();
         this.countdown = this.add.text(this.cameras.main.centerX, 30, this.counter.toString(), { font: "20px Quicksand", fill: "BLACK" })
