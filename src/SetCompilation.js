@@ -7,7 +7,8 @@ export class SetCompilation extends Scene {
         super({ key: "set" });
 
         // server, scenen manager
-        this.allWords = [];
+        this.allWordPairs = [];
+        this.allSingleWords = [];
 
         this.set = [];
         this.pool = [];
@@ -28,12 +29,20 @@ export class SetCompilation extends Scene {
 
     create() {
         // server, scenen manager
-        this.allWords = [];
+        this.allWordPairs = [];
         this.hardCodeWordPairs();
 
+        this.allSingleWords = this.getAllWithoutDoubles(this.allWordPairs);
         this.set = [];
-        this.pool = this.getAllWithouDoubles(this.allWords);
-        this.pool.splice(20);
+        this.pool = [];
+        
+        while (this.pool.length <= 20) {
+            var randomWord = this.allSingleWords[Math.floor(Math.random() * this.allSingleWords.length)];
+            if(!this.pool.includes(randomWord)){
+                this.pool.push(randomWord);
+            }
+        }
+
         this.poolWords = [];
 
         this.add.image(0, 0, 'background').setOrigin(0, 0);
@@ -43,11 +52,16 @@ export class SetCompilation extends Scene {
 
     update() {
         // display the chosen word set
-        var offset = 20;
-        this.set.forEach(element => {
-            element.setPosition(offset, 25);
-            offset += element.displayWidth + 50;
-        });
+        var offsetX = 20; 
+        var offsetY = 25;
+        for (let i = 0; i < this.set.length; i++) {
+            this.set[i].setPosition(offsetX, offsetY);
+            offsetX += this.set[i].displayWidth + 50;
+            if (this.set[i+1] != null && this.set[i + 1].displayWidth >= this.cameras.main.centerX * 2 - offsetX - 20) {
+                offsetY += 50;
+                offsetX = 20;
+            }
+        } 
 
         if(this.set.length == this.pillars.length){
             this.finishButton.visible = true;
@@ -60,7 +74,7 @@ export class SetCompilation extends Scene {
         this.finishButton = this.add.text(600, 170, "Fertig", { font: "20px Quicksand", fill: "BLACK" });
         this.finishButton.setInteractive().on('pointerdown', () => {
             // zu level
-            this.scene.start("level", { pairDist: this.allWords, wordSet: this.set, pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
+            this.scene.start("level", { pairDist: this.allWordPairs, wordSet: this.set, pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
         });
         this.finishButton.on('pointerover', () => { this.finishButton.setColor("#0046aa"); });
         this.finishButton.on('pointerout', () => { this.finishButton.setColor("BLACK"); });
@@ -101,29 +115,29 @@ export class SetCompilation extends Scene {
         // this.pairDist.push(["Kochtopf", "Tee", "0"]);
 
         // die ersten 20 Einträge vom Goldstandard
-        this.allWords.push(["Kochtopf", "Tee", "0"]);
-        this.allWords.push(["Geschirrtuch", "Tisch", "0"]);
-        this.allWords.push(["Schere", "Papier", "0"]);
-        this.allWords.push(["Tasse", "Topfdeckel", "3"]);
-        this.allWords.push(["Kerze", "Feuerzeug", "0"]);
-        this.allWords.push(["Lampe", "Kabel", "0"]);
-        this.allWords.push(["Bleistift", "Papiertaschentuch", "2"]);
-        this.allWords.push(["Plastikverpackung", "Klebeband", "1"]);
-        this.allWords.push(["Schwamm", "Spülmittel", "0"]);
-        this.allWords.push(["Korken", "Kugelschreiber", "5"]);
-        this.allWords.push(["Holzbrett", "Bleistift", "3"]);
-        this.allWords.push(["Spülmittel", "Gemüsemesser", "0"]);
-        this.allWords.push(["Nadel", "Faden", "0"]);
-        this.allWords.push(["Streichholz", "Schere", "5"]);
-        this.allWords.push(["Kochlöffel", "Kochtopf", "0"]);
-        this.allWords.push(["Glas", "Geschirrtuch", "0"]);
-        this.allWords.push(["Papiertaschentuch", "Teller", "2"]);
-        this.allWords.push(["Hemd", "Wäscheklammer", "1"]);
-        this.allWords.push(["Weinflasche", "Korken", "0"]);
-        this.allWords.push(["Hemd", "Bügeleisen", "0"]);
+        this.allWordPairs.push(["Kochtopf", "Tee", "0"]);
+        this.allWordPairs.push(["Geschirrtuch", "Tisch", "0"]);
+        this.allWordPairs.push(["Schere", "Papier", "0"]);
+        this.allWordPairs.push(["Tasse", "Topfdeckel", "3"]);
+        this.allWordPairs.push(["Kerze", "Feuerzeug", "0"]);
+        this.allWordPairs.push(["Lampe", "Kabel", "0"]);
+        this.allWordPairs.push(["Bleistift", "Papiertaschentuch", "2"]);
+        this.allWordPairs.push(["Plastikverpackung", "Klebeband", "1"]);
+        this.allWordPairs.push(["Schwamm", "Spülmittel", "0"]);
+        this.allWordPairs.push(["Korken", "Kugelschreiber", "5"]);
+        this.allWordPairs.push(["Holzbrett", "Bleistift", "3"]);
+        this.allWordPairs.push(["Spülmittel", "Gemüsemesser", "0"]);
+        this.allWordPairs.push(["Nadel", "Faden", "0"]);
+        this.allWordPairs.push(["Streichholz", "Schere", "5"]);
+        this.allWordPairs.push(["Kochlöffel", "Kochtopf", "0"]);
+        this.allWordPairs.push(["Glas", "Geschirrtuch", "0"]);
+        this.allWordPairs.push(["Papiertaschentuch", "Teller", "2"]);
+        this.allWordPairs.push(["Hemd", "Wäscheklammer", "1"]);
+        this.allWordPairs.push(["Weinflasche", "Korken", "0"]);
+        this.allWordPairs.push(["Hemd", "Bügeleisen", "0"]);
     }
 
-    getAllWithouDoubles(twoDArray) {
+    getAllWithoutDoubles(twoDArray) {
         var finalArray = [];
         twoDArray.forEach(elem => {
             for (let i = 0; i < 2; i++) {

@@ -126,11 +126,16 @@ export class Level extends Scene {
         });
         
         // create player's word set
-        var offset = 20;
-        for (var i = 0; i < this.words.length; i++) {
-            this.playerWordSet.push(new Word(this, offset, 25, this.words[i].text, this.pairDist));
-            offset += this.playerWordSet[i].displayWidth + 50;
-        }
+        var offsetX = 20; 
+        var offsetY = 25;
+        for (let i = 0; i < this.words.length; i++) {
+            this.playerWordSet.push(new Word(this, offsetX, offsetY, this.words[i].text, this.pairDist));
+            offsetX += this.words[i].displayWidth + 50;
+            if (this.words[i+1] != null && this.words[i + 1].displayWidth >= this.cameras.main.centerX * 2 - offsetX - 20) {
+                offsetY += 50;
+                offsetX = 20;
+            }
+        } 
     }
 
     createButtons() {
