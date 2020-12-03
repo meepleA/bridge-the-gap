@@ -18,6 +18,7 @@ export class Word extends Phaser.GameObjects.Text {
         this.partnerDist = [];
         this.fillPartnerDist(words);
         this.isHighlighted = false;
+        this.enteredPillar;
     }
 
     // später auf server, hier anfrage

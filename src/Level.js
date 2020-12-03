@@ -26,7 +26,6 @@ export class Level extends Scene {
         this.pillars = [];
         this.bridgeParts = [];
         this.adjacentBridgeParts = [];
-        this.message;
         this.nextLvlButton;
         this.shortBridge = 61;
         this.mediumBridge = 122;
@@ -68,9 +67,6 @@ export class Level extends Scene {
 
         this.createLemmings();
         this.physics.add.collider(this.lemmings, this.grounds);
-
-        this.message = this.add.text(200, 170, "Das passt nicht.", { font: "20px Quicksand", fill: "#000000" });
-        this.message.visible = false;
     }
 
     update() {
@@ -100,51 +96,35 @@ export class Level extends Scene {
             this.rightPreviewBridge.setPosition(this.selectedPillar.x + this.selectedPillar.displayWidth, this.selectedPillar.y);
             this.showBridgePreview(this.rightPreviewBridge, 1);
         }
-
-        // if(this.adjacentBridgeParts[1] != null){
-        //     var rightpreviewBridge = this.add.graphics();
-        //     rightpreviewBridge.fillStyle("#9a7f61", 0.5);
-        //     rightpreviewBridge.fillRect(this.adjacentBridgeParts[1].x, this.adjacentBridgeParts[1].y, 300 * value, 30);
-
-        //     rightpreviewBridge.destroy();
-        // }
     }
 
     createStatics() {
         this.grounds = this.physics.add.group();
-        // TODO: letzten von pillars abhängig machen
-        this.grounds.create(0, 300, 'cliff').setOrigin(0, 0);
-        this.grounds.create(700, 300, 'cliff').setOrigin(0, 0);
 
-        // instantiate pillars and bridge parts 
-        this.givenPillars.forEach(element => {
-            this.pillars.push(new Pillar(this, element.x, element.y));
-        });
-
-        this.givenBridgeParts.forEach(element => {
-            this.bridgeParts.push(new Bridge(this, element.x, element.y, element.dist));
-        });
-
-        // add pillars and bridge parts to grounds group and set their physics
-        this.pillars.forEach(pillar => {
-            this.grounds.add(pillar);
-            pillar.setInteractive().on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
-                this.changeSelectedPillar(pillar);
+        // instantiate pillars and bridge parts as members of grounds group and set their physics
+        for (let i = 0; i < this.givenPillars.length; i++) {
+            this.pillars.push(new Pillar(this, this.givenPillars[i].x, this.givenPillars[i].y));
+            this.grounds.add(this.pillars[i]);
+            this.pillars[i].setInteractive().on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+                this.changeSelectedPillar(this.pillars[i]);
             });
-        });
-        this.bridgeParts.forEach(part => {
-            this.grounds.add(part);
-        });
+        }
+
+        for (var i = 0; i < this.givenBridgeParts.length; i++) {
+            this.bridgeParts.push(new Bridge(this, this.givenBridgeParts[i].x, this.givenBridgeParts[i].y, this.givenBridgeParts[i].dist));
+            this.grounds.add(this.bridgeParts[i]);
+            this.bridgeParts[i].body.enable = false;
+        }
+
+        // other ground
+        this.grounds.create(0, 300, 'cliff').setOrigin(0, 0);
+        this.grounds.create(this.pillars[this.pillars.length - 1].x + this.pillars[this.pillars.length - 1].displayWidth, 300, 'cliff').setOrigin(0, 0);
 
         this.grounds.children.iterate(function (child) {
             child.body.allowGravity = false;
             child.body.immovable = true;
         });
-
-        this.bridgeParts.forEach(element => {
-            element.body.enable = false;
-        });
-
+        
         // create player's word set
         var offset = 20;
         for (var i = 0; i < this.words.length; i++) {
@@ -158,7 +138,7 @@ export class Level extends Scene {
         this.nextLvlButton = this.add.text(600, 170, "Nächstes Level", { font: "20px Quicksand", fill: "#000000" });
         this.nextLvlButton.visible = false;
         this.nextLvlButton.setInteractive().on('pointerdown', () => {
-            // rückgabe an scene manager
+            // to next preview scene
             this.resetVariables();
             this.scene.start('preview');
         });
@@ -188,24 +168,20 @@ export class Level extends Scene {
         }
         this.selectedWord = word;
 
-        this.message.visible = false;
-
-        for (var i = 0; i < this.pillars.length; i++) {
-            if (this.pillars[i].enteredWord != null && this.pillars[i].enteredWord == word) {
-                word.setAngle(0);
-                word.setPosition(word.originalX, word.originalY);
-                this.pillars[i].enteredWord = null;
-                this.adjacentBridgeParts = [];
-                // this.leftPreviewBridge.visible = false;
-                // this.rightPreviewBridge.visible = false;
-                if (i > 0) {
-                    this.bridgeParts[i - 1].visible = false;
-                    this.bridgeParts[i - 1].body.enable = false;
-                }
-                if (i < this.pillars.length - 1) {
-                    this.bridgeParts[i].visible = false;
-                    this.bridgeParts[i].body.enable = false;
-                }
+        if (word.enteredPillar != null) {
+            var idx = this.pillars.indexOf(word.enteredPillar);
+            word.setAngle(0);
+            word.setPosition(word.originalX, word.originalY);
+            this.pillars[idx].enteredWord = null;
+            word.enteredPillar = null;
+            this.adjacentBridgeParts = [];
+            // this.leftPreviewBridge.visible = false;
+            // this.rightPreviewBridge.visible = false;
+            if (idx > 0) {
+                this.toggleBridgePartVisibility(this.bridgeParts[idx - 1], false);
+            }
+            if (idx < this.pillars.length - 1) {
+                this.toggleBridgePartVisibility(this.bridgeParts[idx], false);
             }
         }
 
@@ -218,71 +194,36 @@ export class Level extends Scene {
     }
 
     changeSelectedPillar(pillar) {
-        this.message.visible = false;
         if (pillar.enteredWord == null && this.selectedWord != null) {
             this.selectedPillar = pillar;
             this.prevBridgeWidth = 0;
-            this.enterWordIntoPillar(pillar);
+            this.selectedWord.enteredPillar = pillar;
+            pillar.enteredWord = this.selectedWord;
+
+            this.wordFitsToPillar(pillar);
+
+            this.selectedWord.setPosition(pillar.x + this.selectedWord.displayHeight, pillar.y + pillar.displayHeight);
+            this.selectedWord.setRotation(-1.5708);
+            this.selectedWord.setColor("BLACK");
+
+
+            this.pillars.forEach(pillar => {
+                pillar.setTexture('pillar');
+            });
         }
     }
 
-    enterWordIntoPillar(pillar) {
-        this.wordFitsToPillar(this.selectedWord, pillar);
-        pillar.enteredWord = this.selectedWord;
-
-        this.selectedWord.setPosition(pillar.x + this.selectedWord.displayHeight, pillar.y + pillar.displayHeight);
-        this.selectedWord.setRotation(-1.5708);
-        this.selectedWord.setColor("BLACK");
-
-
-        this.pillars.forEach(pillar => {
-            pillar.setTexture('pillar');
-        });
-        // } else {
-        //     this.message.visible = true;
-        // }
-    }
-
-    wordFitsToPillar(word, pillar) {
+    wordFitsToPillar(pillar) {
         var pillarIndex = this.pillars.indexOf(pillar);
-        var leftFits = true;
-        var rightFits = true;
 
-        // check if there is a left pillar with a word and if so compare dist
+        // check if there is a left pillar with a word and if so set its connecting bridgePArt
         if (pillarIndex > 0 && this.pillars[pillarIndex - 1].enteredWord != null) {
             this.adjacentBridgeParts[0] = this.bridgeParts[pillarIndex - 1];
-            var leftdist = this.pillars[pillarIndex - 1].enteredWord.getDist(word);
-            if (leftdist != -1) {
-                if (this.bridgeParts[pillarIndex - 1].dist != leftdist) {
-                    leftFits = false;
-                }
-            }
         }
         // check right side
         if (pillarIndex < this.pillars.length - 1 && this.pillars[pillarIndex + 1].enteredWord != null) {
             this.adjacentBridgeParts[1] = this.bridgeParts[pillarIndex];
-            var rightDist = this.pillars[pillarIndex + 1].enteredWord.getDist(word);
-            if (rightDist != -1) {
-                if (this.bridgeParts[pillarIndex].dist != rightDist) {
-                    rightFits = false;
-                }
-            }
         }
-
-        // auslagern
-
-        // if (leftFits && rightFits) {
-        //     // show bridge
-        //     this.adjacentBridgeParts.forEach(part => {
-        //         part.visible = true;
-        //         part.body.enable = true;
-        //     });
-        //     this.adjacentBridgeParts = [];
-        //     return true;
-        // } else {
-        //     this.adjacentBridgeParts = [];
-        //     return false;
-        // }
     }
 
     getAdjacentDist(word, pillar) {
@@ -298,9 +239,9 @@ export class Level extends Scene {
         return arr;
     }
 
-    showBridgePart(bridge) {
-        bridge.visible = true;
-        bridge.body.enable = true;
+    toggleBridgePartVisibility(bridge, bool) {
+        bridge.visible = bool;
+        bridge.body.enable = bool;
     }
 
     // show a preview of the bridge parts for the entered word
@@ -310,7 +251,7 @@ export class Level extends Scene {
         img.visible = true;
 
         if (wordDist[idx] == -1 && this.prevBridgeWidth >= this.adjacentBridgeParts[idx].displayWidth) {
-            this.showBridgePart(this.adjacentBridgeParts[idx]);
+            this.toggleBridgePartVisibility(this.adjacentBridgeParts[idx], true);
             this.adjacentBridgeParts[idx] = null;
             img.visible = false;
         } else if ((wordDist[idx] == 1 && this.prevBridgeWidth >= this.shortBridge)
@@ -318,7 +259,7 @@ export class Level extends Scene {
             || wordDist[idx] == 3 && this.prevBridgeWidth >= this.longBridge) {
 
             if (this.adjacentBridgeParts[idx].dist == wordDist[idx]) {
-                this.showBridgePart(this.adjacentBridgeParts[idx]);
+                this.toggleBridgePartVisibility(this.adjacentBridgeParts[idx], true);
             }
             this.adjacentBridgeParts[idx] = null;
             img.visible = false;
@@ -349,6 +290,8 @@ export class Level extends Scene {
     resetVariables() {
         this.loggingValues = [];
         this.pairDist = [];
+        this.selectedWord = null;
+        this.selectedPillar = null;
 
         this.playerWordSet = [];
         // vorauswahl
@@ -358,7 +301,6 @@ export class Level extends Scene {
         this.givenBridgeParts = [];
         this.pillars = [];
         this.bridgeParts = [];
-        this.message = null;
         this.nextLvlButton = null;
     }
 }
