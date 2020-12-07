@@ -37,15 +37,20 @@ export class Word extends Phaser.GameObjects.Text {
         for(var i=0; i<this.partnerDist.length; i++){
             if(this.partnerDist[i][0] == word.text){
                 var comparableDist = Math.round(parseFloat(this.partnerDist[i][1]));
-                if(comparableDist == 0 || comparableDist == 1){
-                    return 1;
-                } else if(comparableDist == 2 || comparableDist == 3){
-                    return 2;
-                } else {
-                    return 3;
-                } 
+                return comparableDist;
+                // if(comparableDist == 0 || comparableDist == 1){
+                //     return 1;
+                // } else if(comparableDist == 2 || comparableDist == 3){
+                //     return 2;
+                // } else {
+                //     return 3;
+                // } 
             }
         }
         return this.defaultDist;
+    }
+
+    addDist(text, dist){
+        this.partnerDist.push([text, dist]);
     }
 }

@@ -9,20 +9,23 @@ export class Level extends Scene {
     constructor() {
         super({ key: "level" });
 
-        // loggingValues = [word1, word2, distance, error]
+        // loggingValues = [ [word1, word2, distance, error, playerID, mode, bonus], [...], ...]
         this.loggingValues = [];
+
+        // data from previous scene
         this.pairDist = [];
-        // server, scenen manager
-        this.playerID;
-
-        this.playerWordSet = [];
-        // vorauswahl
         this.words = [];
-
-        this.selectedWord;
-        this.selectedPillar;
         this.givenPillars;
         this.givenBridgeParts;
+        // TODO: server, scenen manager
+        // strings
+        this.playerID; 
+        this.gameMode; 
+        this.isBonus;
+
+        this.playerWordSet = [];
+        this.selectedWord;
+        this.selectedPillar;
         this.pillars = [];
         this.bridgeParts = [];
         this.adjacentBridgeParts = [];
@@ -55,6 +58,7 @@ export class Level extends Scene {
 
     create() {
         this.prevBridgeWidth = 0;
+        this.loggingValues = [];
 
         this.add.image(0, 0, 'background').setOrigin(0, 0);
         this.createStatics();
@@ -144,9 +148,16 @@ export class Level extends Scene {
         this.nextLvlButton.visible = false;
         this.nextLvlButton.setInteractive().on('pointerdown', () => {
             // to next preview scene
+            this.loggingValues.forEach(async element => {
+                let dataToSend = { wordPair: element.splice(0, 2), annotation: element};
+                const fetchPromise = await this.sendResults(dataToSend);
+                // { test: "greetings from the client" }
+            });
+            
+            console.log("start new level");
             this.resetVariables();
             this.scene.start('preview');
-        });
+        }); 
         this.nextLvlButton.on('pointerover', () => { this.nextLvlButton.setColor("#0046aa"); });
         this.nextLvlButton.on('pointerout', () => { this.nextLvlButton.setColor("BLACK"); });
     }
@@ -211,7 +222,6 @@ export class Level extends Scene {
             this.selectedWord.setRotation(-1.5708);
             this.selectedWord.setColor("BLACK");
 
-
             this.pillars.forEach(pillar => {
                 pillar.setTexture('pillar');
             });
@@ -224,10 +234,30 @@ export class Level extends Scene {
         // check if there is a left pillar with a word and if so set its connecting bridgePArt
         if (pillarIndex > 0 && this.pillars[pillarIndex - 1].enteredWord != null) {
             this.adjacentBridgeParts[0] = this.bridgeParts[pillarIndex - 1];
+            this.logData(0, this.pillars[pillarIndex - 1].enteredWord);
         }
         // check right side
         if (pillarIndex < this.pillars.length - 1 && this.pillars[pillarIndex + 1].enteredWord != null) {
             this.adjacentBridgeParts[1] = this.bridgeParts[pillarIndex];
+            this.logData(1, this.pillars[pillarIndex + 1].enteredWord);
+        }
+    }
+
+    logData(idx, otherWord){
+        let wordDist = otherWord.getDist(this.selectedWord);
+        let distToLog = this.adjacentBridgeParts[idx].dist.toString();
+        console.log(wordDist);
+
+        if (wordDist == -1) {
+            this.selectedWord.addDist(otherWord.text, this.adjacentBridgeParts[idx].dist);
+            otherWord.addDist(this.selectedWord.text, this.adjacentBridgeParts[idx].dist);
+            wordDist = this.adjacentBridgeParts[idx].dist;
+            this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "initial", this.playerID, this.gameMode, this.isBonus]);
+      
+        } else if (this.adjacentBridgeParts[idx].dist == wordDist) {
+            this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "correct", this.playerID, this.gameMode, this.isBonus]);
+        } else {
+            this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "wrong", this.playerID, this.gameMode, this.isBonus]);
         }
     }
 
@@ -290,6 +320,25 @@ export class Level extends Scene {
         } else {
             this.nextLvlButton.visible = false;
         };
+    }
+
+    
+
+    sendResults(data) {
+        return fetch("/levelResult", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(jsonObj => {
+                console.log(jsonObj);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
     resetVariables() {
