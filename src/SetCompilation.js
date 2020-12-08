@@ -137,7 +137,7 @@ export class SetCompilation extends Scene {
 
     // TODO: unterscheidung studie - free play
     getWordPairs() {
-        return fetch("/wordpairs", {
+        return fetch("/wordPairs", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

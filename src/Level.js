@@ -149,7 +149,7 @@ export class Level extends Scene {
         this.nextLvlButton.setInteractive().on('pointerdown', () => {
             // to next preview scene
             this.loggingValues.forEach(async element => {
-                let dataToSend = { wordPair: element.splice(0, 2), annotation: element};
+                let dataToSend = { wordpair: element.splice(0, 2), annotation: element};
                 const fetchPromise = await this.sendResults(dataToSend);
                 // { test: "greetings from the client" }
             });
