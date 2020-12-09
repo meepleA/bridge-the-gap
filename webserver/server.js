@@ -6,7 +6,7 @@ const host = 'localhost';
 const port = 8000;
 let server = express();
 let allWordPairs = [];
-let receivedFilename;
+let receivedFilename = [];
 let annotationData;
 // TODO: aus files zusammenstellen
 // allWordPairs.push(["Kochtopf", "Tee", "0"]);
@@ -45,7 +45,7 @@ let annotationData;
 // allWordPairs.push(["Nadel", "Faden", "1"]);
 // allWordPairs.push(["Streichholz", "Schere", "3"]);
 // allWordPairs.push(["Kochlöffel", "Kochtopf", "1"]);
-// allWordPairs.push(["Glas", "Geschirrtuch", "0"]);
+// allWordPairs.push(["Glas", "Geschirrtuch", "1"]);
 // allWordPairs.push(["Papiertaschentuch", "Teller", "2"]);
 // allWordPairs.push(["Hemd", "Wäscheklammer", "1"]);
 // allWordPairs.push(["Weinflasche", "Korken", "1"]);
@@ -73,8 +73,12 @@ server.post("/wordPairs", (req, res) => {
 
     // sync
     readFiles(__dirname + "/data/", function (filename, fileContent) {
-        // TODO: Durchschnitt berechnen
-        allWordPairs.push([fileContent.wordpair[0], fileContent.wordpair[1], fileContent.annotation[0]]);
+        let average = 0;
+        fileContent.annotation.forEach(element => {
+            average += element[0];
+        });
+        average = average/fileContent.annotation.length;
+        allWordPairs.push([fileContent.wordpair[0], fileContent.wordpair[1], average]);
     });
 
     let jsonArray = { "array": allWordPairs };
@@ -84,18 +88,19 @@ server.post("/wordPairs", (req, res) => {
 server.post("/levelResult", (req, res) => {
     // reqValues = { wordpair: [word1, word2], annotation: [distance, error, playerID, mode, bonus] }
     // save json file
-    receivedFilename = req.body.wordpair[0] + "-" + req.body.wordpair[1] + ".json";
+    receivedFilename[0] = req.body.wordpair[0] + "-" + req.body.wordpair[1] + ".json";
+    receivedFilename[1] = req.body.wordpair[1] + "-" + req.body.wordpair[0] + ".json";
     annotationData = [req.body.annotation];
 
     readFiles(__dirname + "/data/", function (filename, fileContent) {
-        if (filename == receivedFilename) {
+        if (filename == receivedFilename[0] || filename == receivedFilename[1]) {
             fileContent.annotation.forEach(element => {
                 annotationData.push(element);
             });
         }
     });
     let jsonData = JSON.stringify({ wordpair: req.body.wordpair, annotation: annotationData }, null, 2);
-    fs.writeFileSync(__dirname + "/data/" + receivedFilename, jsonData);
+    fs.writeFileSync(__dirname + "/data/" + receivedFilename[0], jsonData);
 
     const data = req.body.wordpair;
     console.log(data);
