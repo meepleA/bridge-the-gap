@@ -2,6 +2,9 @@ import Phaser from "phaser";
 import { Level } from "./Level";
 import { SetCompilation } from "./SetCompilation";
 import { Preview } from "./Preview";
+import { Menu } from "./Menu";
+import { Rules } from "./Rules";
+import { Tutorial } from "./Tutorial";
 
 export const config = {
     type: Phaser.AUTO,
@@ -14,5 +17,5 @@ export const config = {
             debug: false
         }
     },
-    scene: [Preview, SetCompilation, Level]
+    scene: [Menu, Rules, Tutorial, Preview, SetCompilation, Level]
 };

@@ -1,6 +1,3 @@
-
-// create bridgeparts und pillars aus level hierher verschieben
-// abbruchbedingung, weiter zu setCompilation -> bridgeparts und pillars durchreichen
 import { Scene } from "phaser";
 import { Pillar } from "./Pillar";
 import { Bridge } from "./Bridge";

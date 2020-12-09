@@ -1,5 +1,6 @@
 import { Scene } from "phaser";
 import { PoolWord } from "./PoolWord";
+import { Button } from "./Button";
 
 export class SetCompilation extends Scene {
 
@@ -31,8 +32,8 @@ export class SetCompilation extends Scene {
     async create() {
         // server, scenen manager
         this.allWordPairs = [];
-        // this.hardCodeWordPairs();
-        const fetchPromise = await this.getWordPairs();
+        this.hardCodeWordPairs();
+        // const fetchPromise = await this.getWordPairs();
 
         this.allSingleWords = this.getAllWithoutDoubles(this.allWordPairs);
         this.set = [];
@@ -67,13 +68,9 @@ export class SetCompilation extends Scene {
     }
 
     createButtons() {
-        this.finishButton = this.add.text(600, 170, "Fertig", { font: "20px Quicksand", fill: "BLACK" });
-        this.finishButton.setInteractive().on('pointerdown', () => {
-            // zu level
+        this.finishButton = new Button(this, 600, 170, "Fertig", () => {
             this.scene.start("level", { pairDist: this.allWordPairs, wordSet: this.set, pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
         });
-        this.finishButton.on('pointerover', () => { this.finishButton.setColor("#0046aa"); });
-        this.finishButton.on('pointerout', () => { this.finishButton.setColor("BLACK"); });
         this.finishButton.visible = false;
     }
 
@@ -110,30 +107,30 @@ export class SetCompilation extends Scene {
         }
     }
 
-    // // server
-    // hardCodeWordPairs() {
-    //     // die ersten 20 Einträge vom Goldstandard
-    //     this.allWordPairs.push(["Kochtopf", "Tee", "0"]);
-    //     this.allWordPairs.push(["Geschirrtuch", "Tisch", "0"]);
-    //     this.allWordPairs.push(["Schere", "Papier", "0"]);
-    //     this.allWordPairs.push(["Tasse", "Topfdeckel", "3"]);
-    //     this.allWordPairs.push(["Kerze", "Feuerzeug", "0"]);
-    //     this.allWordPairs.push(["Lampe", "Kabel", "0"]);
-    //     this.allWordPairs.push(["Bleistift", "Papiertaschentuch", "2"]);
-    //     this.allWordPairs.push(["Plastikverpackung", "Klebeband", "1"]);
-    //     this.allWordPairs.push(["Schwamm", "Spülmittel", "0"]);
-    //     this.allWordPairs.push(["Korken", "Kugelschreiber", "5"]);
-    //     this.allWordPairs.push(["Holzbrett", "Bleistift", "3"]);
-    //     this.allWordPairs.push(["Spülmittel", "Gemüsemesser", "0"]);
-    //     this.allWordPairs.push(["Nadel", "Faden", "0"]);
-    //     this.allWordPairs.push(["Streichholz", "Schere", "5"]);
-    //     this.allWordPairs.push(["Kochlöffel", "Kochtopf", "0"]);
-    //     this.allWordPairs.push(["Glas", "Geschirrtuch", "0"]);
-    //     this.allWordPairs.push(["Papiertaschentuch", "Teller", "2"]);
-    //     this.allWordPairs.push(["Hemd", "Wäscheklammer", "1"]);
-    //     this.allWordPairs.push(["Weinflasche", "Korken", "0"]);
-    //     this.allWordPairs.push(["Hemd", "Bügeleisen", "0"]);
-    // }
+    // server
+    hardCodeWordPairs() {
+        // die ersten 20 Einträge vom Goldstandard
+        this.allWordPairs.push(["Kochtopf", "Tee", "0"]);
+        this.allWordPairs.push(["Geschirrtuch", "Tisch", "0"]);
+        this.allWordPairs.push(["Schere", "Papier", "0"]);
+        this.allWordPairs.push(["Tasse", "Topfdeckel", "3"]);
+        this.allWordPairs.push(["Kerze", "Feuerzeug", "0"]);
+        this.allWordPairs.push(["Lampe", "Kabel", "0"]);
+        this.allWordPairs.push(["Bleistift", "Papiertaschentuch", "2"]);
+        this.allWordPairs.push(["Plastikverpackung", "Klebeband", "1"]);
+        this.allWordPairs.push(["Schwamm", "Spülmittel", "0"]);
+        this.allWordPairs.push(["Korken", "Kugelschreiber", "5"]);
+        this.allWordPairs.push(["Holzbrett", "Bleistift", "3"]);
+        this.allWordPairs.push(["Spülmittel", "Gemüsemesser", "0"]);
+        this.allWordPairs.push(["Nadel", "Faden", "0"]);
+        this.allWordPairs.push(["Streichholz", "Schere", "5"]);
+        this.allWordPairs.push(["Kochlöffel", "Kochtopf", "0"]);
+        this.allWordPairs.push(["Glas", "Geschirrtuch", "0"]);
+        this.allWordPairs.push(["Papiertaschentuch", "Teller", "2"]);
+        this.allWordPairs.push(["Hemd", "Wäscheklammer", "1"]);
+        this.allWordPairs.push(["Weinflasche", "Korken", "0"]);
+        this.allWordPairs.push(["Hemd", "Bügeleisen", "0"]);
+    }
 
     // TODO: unterscheidung studie - free play
     getWordPairs() {

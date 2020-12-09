@@ -3,6 +3,7 @@ import { Image } from "phaser";
 import { Pillar } from "./Pillar";
 import { Bridge } from "./Bridge";
 import { Word } from "./Word";
+import { Button } from "./Button";
 
 export class Level extends Scene {
 
@@ -144,22 +145,18 @@ export class Level extends Scene {
 
     createButtons() {
         // next level button
-        this.nextLvlButton = this.add.text(600, 170, "Nächstes Level", { font: "20px Quicksand", fill: "#000000" });
-        this.nextLvlButton.visible = false;
-        this.nextLvlButton.setInteractive().on('pointerdown', () => {
-            // to next preview scene
+        this.nextLvlButton = new Button(this, 600, 170, "Nächstes Level", () => {
             this.loggingValues.forEach(async element => {
                 let dataToSend = { wordpair: element.splice(0, 2), annotation: element};
-                const fetchPromise = await this.sendResults(dataToSend);
-                // { test: "greetings from the client" }
+                // const fetchPromise = await this.sendResults(dataToSend);
             });
             
             console.log("start new level");
             this.resetVariables();
             this.scene.start('preview');
-        }); 
-        this.nextLvlButton.on('pointerover', () => { this.nextLvlButton.setColor("#0046aa"); });
-        this.nextLvlButton.on('pointerout', () => { this.nextLvlButton.setColor("BLACK"); });
+        });
+
+        this.nextLvlButton.visible = false;
     }
 
     createLemmings() {
