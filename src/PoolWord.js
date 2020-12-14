@@ -1,8 +1,8 @@
 
 export class PoolWord extends Phaser.GameObjects.Text {
 
-    constructor(scenep, x, y, text) {      
-        super(scenep, x, y, text, { font: "20px Quicksand", fill: "#000000"});
+    constructor(scenep, x, y, style, text) {      
+        super(scenep, x, y, text, style);
         this.scene = scenep;
         this.originalX = x;
         this.originalY = y;

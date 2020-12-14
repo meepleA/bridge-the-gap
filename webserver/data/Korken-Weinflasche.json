@@ -1,12 +1,12 @@
 {
   "wordpair": [
-    "Geschirrtuch",
-    "Tisch"
+    "Korken",
+    "Weinflasche"
   ],
   "annotation": [
     [
-      "3",
-      "wrong",
+      "1",
+      "correct",
       null,
       null,
       null

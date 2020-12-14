@@ -88,23 +88,26 @@ server.post("/wordPairs", (req, res) => {
 server.post("/levelResult", (req, res) => {
     // reqValues = { wordpair: [word1, word2], annotation: [distance, error, playerID, mode, bonus] }
     // save json file
-    receivedFilename[0] = req.body.wordpair[0] + "-" + req.body.wordpair[1] + ".json";
-    receivedFilename[1] = req.body.wordpair[1] + "-" + req.body.wordpair[0] + ".json";
-    annotationData = [req.body.annotation];
 
-    readFiles(__dirname + "/data/", function (filename, fileContent) {
-        if (filename == receivedFilename[0] || filename == receivedFilename[1]) {
-            fileContent.annotation.forEach(element => {
-                annotationData.push(element);
-            });
-        }
-    });
-    let jsonData = JSON.stringify({ wordpair: req.body.wordpair, annotation: annotationData }, null, 2);
-    fs.writeFileSync(__dirname + "/data/" + receivedFilename[0], jsonData);
+    console.log(req.body)
 
-    const data = req.body.wordpair;
-    console.log(data);
-    res.json(data);
+    for (elem of req.body) {
+        receivedFilename[0] = elem.wordpair[0] + "-" + elem.wordpair[1] + ".json";
+        receivedFilename[1] = elem.wordpair[1] + "-" + elem.wordpair[0] + ".json";
+        annotationData = [elem.annotation];
+
+        readFiles(__dirname + "/data/", function (filename, fileContent) {
+            if (filename == receivedFilename[0] || filename == receivedFilename[1]) {
+                fileContent.annotation.forEach(element => {
+                    annotationData.push(element);
+                });
+            }
+        });
+        let jsonData = JSON.stringify({ wordpair: elem.wordpair, annotation: annotationData }, null, 2);
+        fs.writeFileSync(__dirname + "/data/" + receivedFilename[0], jsonData);
+    }
+
+    res.json({ finished: "oh yeah"});
 });
 
 

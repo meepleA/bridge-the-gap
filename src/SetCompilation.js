@@ -1,11 +1,18 @@
 import { Scene } from "phaser";
 import { PoolWord } from "./PoolWord";
 import { Button } from "./Button";
+import { WordSet } from "./WordSet";
 
 export class SetCompilation extends Scene {
 
     constructor() {
         super({ key: "set" });
+
+        // data from previous scene
+        this.levelCount;
+        this.textStyle;
+        this.pillars;
+        this.bridgeParts;
 
         // server, scenen manager
         this.allWordPairs = [];
@@ -13,14 +20,14 @@ export class SetCompilation extends Scene {
 
         this.set = [];
         this.pool = [];
-        this.poolWords = [];
-
-        this.pillars;
-        this.bridgeParts;
+        this.poolWords; 
         this.finishButton;
+        this.lvlCountText;
     }
 
     init(data) {
+        this.levelCount = data.level;
+        this.textStyle = data.generalTextStyle;
         this.pillars = data.pillarArr;
         this.bridgeParts = data.bridgePartArr;
     }
@@ -36,7 +43,7 @@ export class SetCompilation extends Scene {
         // const fetchPromise = await this.getWordPairs();
 
         this.allSingleWords = this.getAllWithoutDoubles(this.allWordPairs);
-        this.set = [];
+        this.set = new WordSet(this);
         this.pool = [];
 
         while (this.pool.length <= 20) {
@@ -46,61 +53,43 @@ export class SetCompilation extends Scene {
             }
         }
 
-        this.poolWords = [];
+        this.poolWords = null;
 
         this.add.image(0, 0, 'background').setOrigin(0, 0);
+        this.lvlCountText = this.add.text(this.cameras.main.centerX * 2 - 100, 30, "Level: " + this.levelCount.toString(), this.textStyle);
         this.createButtons();
         this.createPool();
     }
 
     update() {
         // display the chosen word set
-        var offsetX = 20;
-        var offsetY = 25;
-        for (let i = 0; i < this.set.length; i++) {
-            this.set[i].setPosition(offsetX, offsetY);
-            offsetX += this.set[i].displayWidth + 50;
-            if (this.set[i + 1] != null && this.set[i + 1].displayWidth >= this.cameras.main.centerX * 2 - offsetX - 20) {
-                offsetY += 50;
-                offsetX = 20;
-            }
-        }
+        this.set.setWordPositions(20, 25, false, this.cameras.main.centerX * 2 - this.lvlCountText.x + 50);
     }
 
     createButtons() {
-        this.finishButton = new Button(this, 600, 170, "Fertig", () => {
-            this.scene.start("level", { pairDist: this.allWordPairs, wordSet: this.set, pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
+        this.finishButton = new Button(this, 700, 170, "Weiter", () => {
+            this.scene.start("level", { generalTextStyle: this.textStyle, level: this.levelCount, pairDist: this.allWordPairs, wordSet: this.set.getSet(), pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
         });
         this.finishButton.visible = false;
     }
 
     createPool() {
-        this.poolWords = [];
+        this.poolWords = new WordSet(this);
         this.pool.forEach(element => {
-            this.poolWords.push(new PoolWord(this, 0, 0, element));
+            this.poolWords.addWord(new PoolWord(this, 0, 0, this.textStyle, element));
         });
-        var x = 20;
-        var y = 300;
-        for (let i = 0; i < this.poolWords.length; i++) {
-            this.poolWords[i].setPosition(x, y);
-            this.poolWords[i].setOriginals(x, y);
-            x += this.poolWords[i].displayWidth + 50;
-            if (i + 1 < this.poolWords.length && this.poolWords[i + 1].displayWidth >= this.cameras.main.centerX * 2 - x - 20) {
-                y += 50;
-                x = 20;
-            }
-        }
+        this.poolWords.setWordPositions(20, 300, true, 20);
     }
 
     selectWord(word) {
-        if (this.set.includes(word)) {
-            this.set.splice(this.set.indexOf(word), 1);
+        if (this.set.getSet().includes(word)) {
+            this.set.spliceWords(this.set.getSet().indexOf(word), 1);
             word.setPosition(word.originalX, word.originalY);
-        } else if (this.set.length < this.pillars.length) {
-            this.set.push(word);
+        } else if (this.set.getSet().length < this.pillars.length) {
+            this.set.addWord(word);
         }
 
-        if (this.set.length == this.pillars.length) {
+        if (this.set.getSet().length == this.pillars.length) {
             this.finishButton.visible = true;
         } else {
             this.finishButton.visible = false;

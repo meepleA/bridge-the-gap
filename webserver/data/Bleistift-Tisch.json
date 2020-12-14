@@ -1,22 +1,15 @@
 {
   "wordpair": [
-    "Geschirrtuch",
+    "Bleistift",
     "Tisch"
   ],
   "annotation": [
     [
       "3",
-      "wrong",
+      "initial",
       null,
       null,
       null
-    ],
-    [
-      "1",
-      "0",
-      "0",
-      "vorstudie",
-      "0"
     ]
   ]
 }

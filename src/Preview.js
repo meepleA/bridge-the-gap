@@ -7,6 +7,10 @@ export class Preview extends Scene {
     constructor() {
         super({ key: "preview" });
 
+        // data from previous scene
+        this.levelCount;
+
+        this.textStyle = { font: "20px Quicksand", fill: "BLACK" };
         this.pillars = [];
         this.bridgeParts = [];
         // TODO: random brückenlängen ermitteln
@@ -18,6 +22,10 @@ export class Preview extends Scene {
 
         this.counter;
         this.countdown;
+    }
+
+    init(data) {
+        this.levelCount = data.level;
     }
 
     preload() {
@@ -32,59 +40,58 @@ export class Preview extends Scene {
         this.pillars = [];
         this.bridgeParts = [];
         this.bridgeLengths = [];
-        this.totalLength = this.pillarWidth;
-        // TODO random
-        while (this.totalLength <= 700 - this.bridgeWidth - this.pillarWidth) {
-            var rand = Math.floor(Math.random() * 3) + 1;
-            this.totalLength = this.pillarWidth;
-            this.bridgeLengths.forEach(element => {
-                this.totalLength += element * this.bridgeWidth + this.pillarWidth;
-            });
-            if(this.totalLength + rand * this.bridgeWidth + this.pillarWidth <= 700){
-            this.bridgeLengths.push(rand);
-            this.totalLength += rand * this.bridgeWidth + this.pillarWidth;
-            } 
-        }
 
+        this.calcBridgeLengths();
         this.numberOfPillars = this.bridgeLengths.length + 1;
         this.counter = 5;
 
         this.add.image(0, 0, 'background').setOrigin(0, 0);
+        this.add.text(this.cameras.main.centerX * 2 - 100, 30, "Level: " + this.levelCount.toString(), this.textStyle);
         this.createBridge();
-        this.countdown = this.add.text(this.cameras.main.centerX, 30, this.counter.toString(), { font: "20px Quicksand", fill: "BLACK" })
-        this.timedEvent = this.time.addEvent({ delay: 1000, callback: this.updateCounter, callbackScope: this, loop: true });
+        this.countdown = this.add.text(this.cameras.main.centerX, 30, this.counter.toString(), this.textStyle);
+        this.timedEvent = this.time.addEvent({ delay: 1000, callback: () => { this.counter--; }, callbackScope: this, loop: true });
     }
 
     update() {
         if (this.counter == -1) {
-            // zu setCompilation
-            this.scene.start("set", { pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
+            // to setCompilation
+            this.scene.start("set", { generalTextStyle: this.textStyle, level: this.levelCount, pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
         } else {
             this.countdown.setText(this.counter.toString());
         }
     }
 
+    // calculate random bridge lengths
+    calcBridgeLengths() {
+
+        this.totalLength = this.pillarWidth;
+
+        while (this.totalLength <= 700 - this.bridgeWidth - this.pillarWidth) {
+            let rand = Math.floor(Math.random() * 3) + 1;
+            if (this.totalLength + rand * this.bridgeWidth + this.pillarWidth <= 700) {
+                this.bridgeLengths.push(rand);
+                this.totalLength += rand * this.bridgeWidth + this.pillarWidth;
+            }
+        }
+    }
+
+    // instantiate pillars and bridge parts
     createBridge() {
-        // instantiate pillars and bridge parts
+
         this.pillars[0] = new Pillar(this, 100, 300);
         this.bridgeParts.push(new Bridge(this, 100 + this.pillarWidth, 300, this.bridgeLengths[0]));
 
-        for (var i = 1; i < this.bridgeLengths.length; i++) {
-            var xPos = this.pillarWidth + this.bridgeParts[i - 1].x + this.bridgeParts[i - 1].displayWidth;
+        for (let i = 1; i < this.bridgeLengths.length; i++) {
+            let xPos = this.pillarWidth + this.bridgeParts[i - 1].x + this.bridgeParts[i - 1].displayWidth;
             this.bridgeParts.push(new Bridge(this, xPos, 300, this.bridgeLengths[i]));
         }
 
-        for (var i = 1; i < this.numberOfPillars; i++) {
-            this.pillars.push(new Pillar(this, this.bridgeParts[i-1].x + this.bridgeParts[i-1].displayWidth, 300));
+        for (let i = 1; i < this.numberOfPillars; i++) {
+            this.pillars.push(new Pillar(this, this.bridgeParts[i - 1].x + this.bridgeParts[i - 1].displayWidth, 300));
         }
-        // this.pillars.push(new Pillar(this, 700 - this.pillarWidth, 300));
 
         this.add.image(0, 300, 'cliff').setOrigin(0, 0);
         this.add.image(this.pillars[this.pillars.length - 1].x + this.pillars[this.pillars.length - 1].displayWidth, 300, 'cliff').setOrigin(0, 0);
 
-    }
-
-    updateCounter() {
-        this.counter--;
     }
 }
