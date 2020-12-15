@@ -19,7 +19,7 @@ export class WordSet {
             }
             this.mySet[i].setPosition(x, y);
             x += this.mySet[i].displayWidth + 50;
-            if (i + 1 < this.mySet.length && this.mySet[i + 1].displayWidth >= this.scene.cameras.main.centerX * 2 - x - offsetRight) {
+            if (i + 1 < this.mySet.length && this.mySet[i + 1].displayWidth >= this.scene.cameras.main.width - x - offsetRight) {
                 y += 50;
                 x = initialX;
             }

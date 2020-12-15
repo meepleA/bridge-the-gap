@@ -5,6 +5,8 @@ import { Preview } from "./Preview";
 import { Menu } from "./Menu";
 import { Rules } from "./Rules";
 import { Tutorial } from "./Tutorial";
+import { BonusLevel } from "./BonusLevel";
+
 
 export const config = {
     type: Phaser.AUTO,
@@ -17,5 +19,5 @@ export const config = {
             debug: false
         }
     },
-    scene: [Menu, Rules, Tutorial, Preview, SetCompilation, Level]
+    scene: [Menu, Rules, Tutorial, Preview, SetCompilation, Level, BonusLevel]
 };

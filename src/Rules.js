@@ -5,7 +5,7 @@ export class Rules extends Scene {
 
     constructor() {
         super({ key: "rules" });
-        this.explanation = "Hier stehen die Spielregeln mit der Erklärung von Pragmatischer Distanz... Die mit Sicherheit auch etwas länger werden, als das hier.";
+        this.explanation = "Das Ziel: \n Baue eine Brücke, damit die Lemminge über den Fluss kommen. \n \n Pragmatische Distanz: \n Zwei Objekte sind sich pragmatisch nahe, wenn du sie intuitiv zusammen benutzen würdest.";
         this.screens = [];
         this.currentScreen;
         this.scenePic;
@@ -22,7 +22,11 @@ export class Rules extends Scene {
         this.screens = ['background', 'previewPic', 'wordSelectionPic']
         this.currentScreen = 0;
         this.scenePic = this.add.image(0, 0, 'background').setOrigin(0, 0);
-        let style = { font: "20px Quicksand", fill: "#000000", wordWrap: { width: 600, useAdvancedWrap: true }, lineSpacing: 20};
+
+        let rt = this.add.renderTexture(0, 0, this.cameras.main.width, this.cameras.main.height);
+        rt.fill(0xffffff, 0.5);
+
+        let style = { font: "20px Quicksand", fill: "#000000", align: "center", wordWrap: { width: 600, useAdvancedWrap: true }, lineSpacing: 20};
         this.paragraph = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, this.explanation, style).setOrigin(0.5, 0.5);
         
         
@@ -36,7 +40,7 @@ export class Rules extends Scene {
             }
             
         });
-        this.rulesButton.setPosition(this.cameras.main.centerX *2 - this.rulesButton.displayWidth - 30, this.cameras.main.centerY *2 - this.rulesButton.displayHeight - 30);
+        this.rulesButton.setPosition(this.cameras.main.width - this.rulesButton.displayWidth - 30, this.cameras.main.height - this.rulesButton.displayHeight - 30);
     }
 
     update(){

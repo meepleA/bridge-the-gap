@@ -46,18 +46,26 @@ export class Preview extends Scene {
         this.counter = 5;
 
         this.add.image(0, 0, 'background').setOrigin(0, 0);
-        this.add.text(this.cameras.main.centerX * 2 - 100, 30, "Level: " + this.levelCount.toString(), this.textStyle);
+        this.add.text(this.cameras.main.width - 100, 30, "Level: " + this.levelCount.toString(), this.textStyle);
         this.createBridge();
-        this.countdown = this.add.text(this.cameras.main.centerX, 30, this.counter.toString(), this.textStyle);
-        this.timedEvent = this.time.addEvent({ delay: 1000, callback: () => { this.counter--; }, callbackScope: this, loop: true });
+
+        if (this.levelCount == 2) {
+            this.scene.start("bonusLevel", { generalTextStyle: this.textStyle, level: this.levelCount });
+        } else {
+            this.countdown = this.add.text(this.cameras.main.centerX, 30, this.counter.toString(), this.textStyle);
+            this.timedEvent = this.time.addEvent({ delay: 1000, callback: () => { this.counter--; console.log }, callbackScope: this, loop: true });
+        }
     }
 
     update() {
-        if (this.counter == -1) {
-            // to setCompilation
-            this.scene.start("set", { generalTextStyle: this.textStyle, level: this.levelCount, pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
+        if (this.levelCount == 2) {
+            //
         } else {
-            this.countdown.setText(this.counter.toString());
+            if (this.counter == -1) {
+                this.scene.start("set", { generalTextStyle: this.textStyle, level: this.levelCount, pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
+            } else {
+                this.countdown.setText(this.counter.toString());
+            }
         }
     }
 

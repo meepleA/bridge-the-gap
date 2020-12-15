@@ -20,7 +20,7 @@ export class SetCompilation extends Scene {
 
         this.set = [];
         this.pool = [];
-        this.poolWords; 
+        this.poolWords;
         this.finishButton;
         this.lvlCountText;
     }
@@ -39,31 +39,23 @@ export class SetCompilation extends Scene {
     async create() {
         // server, scenen manager
         this.allWordPairs = [];
-        this.hardCodeWordPairs();
-        // const fetchPromise = await this.getWordPairs();
+        this.hardCodeWordPairs(this.allWordPairs);
+        // const fetchPromise = await this.getWordPairs(this.allWordPairs);
 
         this.allSingleWords = this.getAllWithoutDoubles(this.allWordPairs);
         this.set = new WordSet(this);
         this.pool = [];
 
-        while (this.pool.length <= 20) {
-            var randomWord = this.allSingleWords[Math.floor(Math.random() * this.allSingleWords.length)];
-            if (!this.pool.includes(randomWord)) {
-                this.pool.push(randomWord);
-            }
-        }
-
-        this.poolWords = null;
-
         this.add.image(0, 0, 'background').setOrigin(0, 0);
-        this.lvlCountText = this.add.text(this.cameras.main.centerX * 2 - 100, 30, "Level: " + this.levelCount.toString(), this.textStyle);
+        this.lvlCountText = this.add.text(this.cameras.main.width - 100, 30, "Level: " + this.levelCount.toString(), this.textStyle);
         this.createButtons();
         this.createPool();
+
     }
 
     update() {
         // display the chosen word set
-        this.set.setWordPositions(20, 25, false, this.cameras.main.centerX * 2 - this.lvlCountText.x + 50);
+        this.set.setWordPositions(20, 25, false, this.cameras.main.width - this.lvlCountText.x + 50);
     }
 
     createButtons() {
@@ -74,6 +66,13 @@ export class SetCompilation extends Scene {
     }
 
     createPool() {
+        while (this.pool.length <= 20) {
+            let randomWord = this.allSingleWords[Math.floor(Math.random() * this.allSingleWords.length)];
+            if (!this.pool.includes(randomWord)) {
+                this.pool.push(randomWord);
+            }
+        }
+
         this.poolWords = new WordSet(this);
         this.pool.forEach(element => {
             this.poolWords.addWord(new PoolWord(this, 0, 0, this.textStyle, element));
@@ -97,32 +96,35 @@ export class SetCompilation extends Scene {
     }
 
     // server
-    hardCodeWordPairs() {
+    hardCodeWordPairs(arr) {
         // die ersten 20 Einträge vom Goldstandard
-        this.allWordPairs.push(["Kochtopf", "Tee", "0"]);
-        this.allWordPairs.push(["Geschirrtuch", "Tisch", "0"]);
-        this.allWordPairs.push(["Schere", "Papier", "0"]);
-        this.allWordPairs.push(["Tasse", "Topfdeckel", "3"]);
-        this.allWordPairs.push(["Kerze", "Feuerzeug", "0"]);
-        this.allWordPairs.push(["Lampe", "Kabel", "0"]);
-        this.allWordPairs.push(["Bleistift", "Papiertaschentuch", "2"]);
-        this.allWordPairs.push(["Plastikverpackung", "Klebeband", "1"]);
-        this.allWordPairs.push(["Schwamm", "Spülmittel", "0"]);
-        this.allWordPairs.push(["Korken", "Kugelschreiber", "5"]);
-        this.allWordPairs.push(["Holzbrett", "Bleistift", "3"]);
-        this.allWordPairs.push(["Spülmittel", "Gemüsemesser", "0"]);
-        this.allWordPairs.push(["Nadel", "Faden", "0"]);
-        this.allWordPairs.push(["Streichholz", "Schere", "5"]);
-        this.allWordPairs.push(["Kochlöffel", "Kochtopf", "0"]);
-        this.allWordPairs.push(["Glas", "Geschirrtuch", "0"]);
-        this.allWordPairs.push(["Papiertaschentuch", "Teller", "2"]);
-        this.allWordPairs.push(["Hemd", "Wäscheklammer", "1"]);
-        this.allWordPairs.push(["Weinflasche", "Korken", "0"]);
-        this.allWordPairs.push(["Hemd", "Bügeleisen", "0"]);
+        arr.push(["Kochtopf", "Tee", "1"]);
+        arr.push(["Geschirrtuch", "Tisch", "1"]);
+        arr.push(["Schere", "Papier", "1"]);
+        arr.push(["Tasse", "Topfdeckel", "2"]);
+        arr.push(["Kerze", "Feuerzeug", "1"]);
+        arr.push(["Lampe", "Kabel", "1"]);
+        arr.push(["Bleistift", "Papiertaschentuch", "2"]);
+        arr.push(["Plastikverpackung", "Klebeband", "1"]);
+        arr.push(["Schwamm", "Spülmittel", "1"]);
+        arr.push(["Korken", "Kugelschreiber", "3"]);
+        arr.push(["Holzbrett", "Bleistift", "2"]);
+        arr.push(["Spülmittel", "Gemüsemesser", "1"]);
+        arr.push(["Nadel", "Faden", "1"]);
+        arr.push(["Streichholz", "Schere", "3"]);
+        arr.push(["Kochlöffel", "Kochtopf", "1"]);
+        arr.push(["Glas", "Geschirrtuch", "1"]);
+        arr.push(["Papiertaschentuch", "Teller", "2"]);
+        arr.push(["Hemd", "Wäscheklammer", "1"]);
+        arr.push(["Weinflasche", "Korken", "1"]);
+        arr.push(["Hemd", "Bügeleisen", "1"]);
+
+        arr.push(["Tasse", "Tee", "1"]);
+        arr.push(["Faden", "Topfdeckel", "2"]);
     }
 
     // TODO: unterscheidung studie - free play
-    getWordPairs() {
+    getWordPairs(resultArray) {
         return fetch("/wordPairs", {
             method: "POST",
             headers: {
@@ -133,7 +135,7 @@ export class SetCompilation extends Scene {
             .then(response => response.json())
             .then(jsonObj => {
                 console.log(jsonObj.array[0]);
-                this.allWordPairs = jsonObj.array;
+                resultArray = jsonObj.array;
             })
             .catch(function (error) {
                 console.log(error);
@@ -141,7 +143,7 @@ export class SetCompilation extends Scene {
     }
 
     getAllWithoutDoubles(twoDArray) {
-        var finalArray = [];
+        let finalArray = [];
         twoDArray.forEach(elem => {
             for (let i = 0; i < 2; i++) {
                 if (!finalArray.includes(elem[i])) {

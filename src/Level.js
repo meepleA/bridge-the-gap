@@ -64,7 +64,7 @@ export class Level extends Scene {
 
     create() {
         this.add.image(0, 0, 'background').setOrigin(0, 0);
-        this.lvlCountText = this.add.text(this.cameras.main.centerX * 2 - 100, 30, "Level: " + this.levelCount.toString(), this.textStyle);
+        this.lvlCountText = this.add.text(this.cameras.main.width - 100, 30, "Level: " + this.levelCount.toString(), this.textStyle);
         this.createStatics();
         this.createButtons();
 
@@ -105,7 +105,7 @@ export class Level extends Scene {
 
         // other ground
         this.grounds.create(0, 300, 'cliff').setOrigin(0, 0);
-        this.grounds.create(this.pillars[this.pillars.length - 1].x + this.pillars[this.pillars.length - 1].displayWidth, 300, 'cliff').setOrigin(0, 0);
+        this.grounds.create(this.pillars[this.pillars.length - 1].x + this.pillars[this.pillars.length - 1].displayWidth, 300, 'cliff').setOrigin(0, 0).setScale(2, 1);
 
         this.grounds.children.iterate(function (child) {
             child.body.allowGravity = false;
@@ -117,7 +117,7 @@ export class Level extends Scene {
         for (let i = 0; i < this.words.length; i++) {
             this.playerWordSet.addWord(new Word(this, 0, 0, this.words[i].text, this.textStyle, this.pairDist));
         }
-        this.playerWordSet.setWordPositions(20, 25, true, this.cameras.main.centerX * 2 - this.lvlCountText.x + 50);
+        this.playerWordSet.setWordPositions(20, 25, true, this.cameras.main.width - this.lvlCountText.x + 50);
     }
 
     createButtons() {
@@ -133,10 +133,16 @@ export class Level extends Scene {
             console.log("start new level");
             this.resetVariables();
             this.levelCount++;
+
+            if(this.levelCount % 4 == 0){
+                this.scene.start('bonusLevel', { generalTextStyle: this.textStyle, level: this.levelCount });
+            } else {
             // if(this.levelCount == 5){
+            //      // end game
             //     // zum fragebogen
             // }
             this.scene.start('preview', {level: this.levelCount});
+            }
         });
 
         this.nextLvlButton.visible = false;
