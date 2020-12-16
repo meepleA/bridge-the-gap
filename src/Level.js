@@ -35,10 +35,8 @@ export class Level extends Scene {
         this.selectedPillar;
         this.pillars = [];
         this.bridgeParts = [];
-        this.adjacentBridgeParts = [];
         this.nextLvlButton;
-        this.leftPreviewBridge;
-        this.rightPreviewBridge;
+        this.prevBridges = [];
         this.lvlCountText;
     }
 
@@ -63,13 +61,13 @@ export class Level extends Scene {
     }
 
     create() {
+        
+        console.log(this.words);
+
         this.add.image(0, 0, 'background').setOrigin(0, 0);
         this.lvlCountText = this.add.text(this.cameras.main.width - 100, 30, "Level: " + this.levelCount.toString(), this.textStyle);
         this.createStatics();
         this.createButtons();
-
-        this.leftPreviewBridge = new PreviewBridge(this, 0, 0, 1);
-        this.rightPreviewBridge = new PreviewBridge(this, 0, 0, 0);
 
         this.lemmings = new LemmingGroup(this);
         this.physics.add.collider(this.lemmings.myGroup, this.grounds);
@@ -77,15 +75,22 @@ export class Level extends Scene {
 
     update() {
 
+        this.checkWin();
+
         if (this.selectedWord != null) {
             this.selectedWord.setColor("#fe8b68");
         }
 
-        this.checkWin();
         // lemmings
         // TODO: floor collision + move back
         this.lemmings.resetPosition();
-        this.bridgePreview();
+        // preview bridge parts
+        this.prevBridges.forEach(element => {
+            if (!element.show()) {
+                this.prevBridges.splice(this.prevBridges.indexOf(element), 1);
+                element.destroy();
+            }
+        });
     }
 
     createStatics() {
@@ -134,14 +139,14 @@ export class Level extends Scene {
             this.resetVariables();
             this.levelCount++;
 
-            if(this.levelCount % 4 == 0){
+            if (this.levelCount % 4 == 0) {
                 this.scene.start('bonusLevel', { generalTextStyle: this.textStyle, level: this.levelCount });
             } else {
-            // if(this.levelCount == 5){
-            //      // end game
-            //     // zum fragebogen
-            // }
-            this.scene.start('preview', {level: this.levelCount});
+                // if(this.levelCount == 5){
+                //      // end game
+                //     // zum fragebogen
+                // }
+                this.scene.start('preview', { level: this.levelCount });
             }
         });
 
@@ -159,9 +164,6 @@ export class Level extends Scene {
             word.resetPosition();
             this.pillars[idx].enteredWord = null;
             word.enteredPillar = null;
-            this.adjacentBridgeParts = [];
-            // this.leftPreviewBridge.visible = false;
-            // this.rightPreviewBridge.visible = false;
             if (idx > 0) {
                 this.bridgeParts[idx - 1].makeVisible(false);
             }
@@ -199,63 +201,39 @@ export class Level extends Scene {
 
         // check if there is a left pillar with a word and if so set its connecting bridgePArt
         if (pillarIndex > 0 && this.pillars[pillarIndex - 1].enteredWord != null) {
-            this.adjacentBridgeParts[0] = this.bridgeParts[pillarIndex - 1];
-            this.logData(0, this.pillars[pillarIndex - 1].enteredWord);
+            let leftBridge = this.bridgeParts[pillarIndex - 1];
+            // create left preview
+            let adjacentWord = this.pillars[this.pillars.indexOf(this.selectedPillar) - 1].enteredWord;
+            this.prevBridges.push(new PreviewBridge(this, this.selectedPillar.x, this.selectedPillar.y, 1, this.selectedWord, adjacentWord, leftBridge));
+
+            this.logData(this.pillars[pillarIndex - 1].enteredWord, leftBridge.dist);
         }
         // check right side
         if (pillarIndex < this.pillars.length - 1 && this.pillars[pillarIndex + 1].enteredWord != null) {
-            this.adjacentBridgeParts[1] = this.bridgeParts[pillarIndex];
-            this.logData(1, this.pillars[pillarIndex + 1].enteredWord);
+            let rightBridge = this.bridgeParts[pillarIndex];
+            // create right preview
+            let adjacentWord = this.pillars[this.pillars.indexOf(this.selectedPillar) + 1].enteredWord;
+            this.prevBridges.push(new PreviewBridge(this, this.selectedPillar.x + this.selectedPillar.displayWidth, this.selectedPillar.y, 0, this.selectedWord, adjacentWord, rightBridge));
+
+            this.logData(this.pillars[pillarIndex + 1].enteredWord, rightBridge.dist);
         }
     }
 
-    logData(idx, otherWord) {
+    logData(otherWord, distance) {
         let wordDist = otherWord.getDist(this.selectedWord);
-        let distToLog = this.adjacentBridgeParts[idx].dist.toString();
+        let distToLog = distance.toString();
         console.log(wordDist);
 
         if (wordDist == -1) {
-            this.selectedWord.addDist(otherWord.text, this.adjacentBridgeParts[idx].dist);
-            otherWord.addDist(this.selectedWord.text, this.adjacentBridgeParts[idx].dist);
-            wordDist = this.adjacentBridgeParts[idx].dist;
+            this.selectedWord.addDist(otherWord.text, distance);
+            otherWord.addDist(this.selectedWord.text, distance);
+            wordDist = distance;
             this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "initial", this.playerID, this.gameMode, this.isBonus]);
 
-        } else if (this.adjacentBridgeParts[idx].dist == wordDist) {
+        } else if (distance == wordDist) {
             this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "correct", this.playerID, this.gameMode, this.isBonus]);
         } else {
             this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "wrong", this.playerID, this.gameMode, this.isBonus]);
-        }
-    }
-
-    getAdjacentDist(word, pillar) {
-        let arr = [];
-        let pillarIndex = this.pillars.indexOf(pillar);
-        if (pillarIndex > 0 && this.pillars[pillarIndex - 1].enteredWord != null) {
-            arr[0] = this.pillars[pillarIndex - 1].enteredWord.getDist(word);
-        }
-        if (pillarIndex < this.pillars.length - 1 && this.pillars[pillarIndex + 1].enteredWord != null) {
-            arr[1] = this.pillars[pillarIndex + 1].enteredWord.getDist(word);
-        }
-
-        return arr;
-    }
-
-    // show a preview of the respective bridge parts if a word is entered
-    bridgePreview() {
-        let wordDist;
-
-        if (this.selectedWord != null && this.selectedPillar != null) {
-            wordDist = this.getAdjacentDist(this.selectedWord, this.selectedPillar);
-        }
-
-        if (this.adjacentBridgeParts[0] != null) {
-            this.leftPreviewBridge.setPosition(this.selectedPillar.x, this.selectedPillar.y);
-            this.adjacentBridgeParts[0] = this.leftPreviewBridge.show(wordDist[0], this.adjacentBridgeParts[0]);
-        }
-
-        if (this.adjacentBridgeParts[1] != null) {
-            this.rightPreviewBridge.setPosition(this.selectedPillar.x + this.selectedPillar.displayWidth, this.selectedPillar.y);
-            this.adjacentBridgeParts[1] = this.rightPreviewBridge.show(wordDist[1], this.adjacentBridgeParts[1]);
         }
     }
 
@@ -306,5 +284,6 @@ export class Level extends Scene {
         this.pillars = [];
         this.bridgeParts = [];
         this.nextLvlButton = null;
+        this.prevBridges = [];
     }
 }

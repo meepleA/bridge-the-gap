@@ -3,6 +3,7 @@ import { Preview } from "./Preview";
 import { SetCompilation } from "./SetCompilation";
 import { Pillar } from "./Pillar";
 import { Bridge } from "./Bridge";
+import { Word } from "./Word";
 
 export class BonusLevel extends Scene {
 
@@ -47,9 +48,9 @@ export class BonusLevel extends Scene {
 
         this.calcPlayerSet(this.set);
         this.createBridge();
-        this.mixContent(this.set);
+        this.set = this.compileSet();
         // show level   
-        
+        console.log(this.set);
         this.levelAnnouncement();
     }
 
@@ -151,15 +152,14 @@ export class BonusLevel extends Scene {
         return arr[Math.floor(Math.random() * arr.length)];
     }
 
-    mixContent(arr){
-        console.log(arr);
+    compileSet(){
         let mixed =[];
-        while(arr.length > 0){
-            mixed.push(this.getRand(arr));
-            arr.splice(arr.indexOf(mixed[mixed.length - 1]), 1);
+        while(this.set.length > 0){
+            mixed.push(new Word(this, 0, 0, this.getRand(this.set), {}, [[],[]]));
+            console.log(mixed[mixed.length - 1].text);
+            this.set.splice(this.set.indexOf(mixed[mixed.length - 1].text), 1);
         }
-        arr = mixed;
-        console.log(arr);
+        return mixed;
     }
 
     getBridgeLengths(){

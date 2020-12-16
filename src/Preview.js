@@ -49,7 +49,7 @@ export class Preview extends Scene {
         this.add.text(this.cameras.main.width - 100, 30, "Level: " + this.levelCount.toString(), this.textStyle);
         this.createBridge();
 
-        if (this.levelCount == 2) {
+        if (this.levelCount == 1) {
             this.scene.start("bonusLevel", { generalTextStyle: this.textStyle, level: this.levelCount });
         } else {
             this.countdown = this.add.text(this.cameras.main.centerX, 30, this.counter.toString(), this.textStyle);
@@ -58,7 +58,7 @@ export class Preview extends Scene {
     }
 
     update() {
-        if (this.levelCount == 2) {
+        if (this.levelCount == 1) {
             //
         } else {
             if (this.counter == -1) {
