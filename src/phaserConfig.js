@@ -6,6 +6,7 @@ import { Menu } from "./Menu";
 import { Rules } from "./Rules";
 import { Tutorial } from "./Tutorial";
 import { BonusLevel } from "./BonusLevel";
+import { EndStudy } from "./EndStudy";
 
 
 export const config = {
@@ -19,5 +20,5 @@ export const config = {
             debug: false
         }
     },
-    scene: [Menu, Rules, Tutorial, Preview, SetCompilation, Level, BonusLevel]
+    scene: [Menu, Rules, Tutorial, Preview, SetCompilation, Level, BonusLevel, EndStudy]
 };

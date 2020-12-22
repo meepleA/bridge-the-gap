@@ -150,33 +150,34 @@ export class Level extends Scene {
             const dataToBeSent = this.loggingValues.map(element => {
                 return { wordpair: element.splice(0, 2), annotation: element }
             })
-            await this.sendResults(dataToBeSent); 
+            await this.sendResults(dataToBeSent);
 
             console.log("start new level");
             this.resetVariables();
             this.levelCount++;
 
-            if (this.levelCount % 2 == 0) {
+            // TODO abhängig von internal counter
+            if (this.levelCount == 2) {
+                // end game
+                this.scene.start('endStudy');
+                 } else if (this.levelCount % 2 == 0) {
                 this.scene.start('bonusLevel', { generalTextStyle: this.textStyle, level: this.levelCount });
-            } else {
-                // if(this.levelCount == 5){
-                //      // end game
-                //     // zum fragebogen
-                // }
+            } else  {
                 this.scene.start('preview', { level: this.levelCount });
             }
+
         }).setOrigin(1, 0);
 
         this.nextLvlButton.visible = false;
         this.nextLvlButton.setScale(0.6, 0.6);
 
         this.otherLevelButton = new Button(this, this.cameras.main.width - 50, 110, "otherLevelButton", async () => {
-            
+
             // all data is sent as array of json objs in a single request -> server has to parse full list!
             const dataToBeSent = this.loggingValues.map(element => {
                 return { wordpair: element.splice(0, 2), annotation: element }
             })
-            await this.sendResults(dataToBeSent); 
+            await this.sendResults(dataToBeSent);
 
             this.resetVariables();
             this.scene.start('preview', { level: this.levelCount });
@@ -286,7 +287,7 @@ export class Level extends Scene {
                 this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "wrong", this.playerID, this.gameMode, this.isBonus]);
             }
 
-            console.log(this.loggingValues[this.loggingValues.length-1]);
+            console.log(this.loggingValues[this.loggingValues.length - 1]);
         }
     }
 
