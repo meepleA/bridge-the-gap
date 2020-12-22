@@ -7,6 +7,7 @@ export class Word extends Phaser.GameObjects.Text {
         this.scene = scenep;
         this.originalX = x;
         this.originalY = y;
+        
         this.scene.add.existing(this).setOrigin(0, 0);
         this.setInteractive().on('pointerdown', () => {
             this.scene.changeSelectedWord(this);
@@ -58,7 +59,7 @@ export class Word extends Phaser.GameObjects.Text {
     }
 
     newPosition(pillar) {
-        this.setPosition(pillar.x + this.displayHeight, pillar.y + pillar.displayHeight);
+        this.setPosition(pillar.x + 10, pillar.y + pillar.displayHeight - 20);
         this.setRotation(-1.5708);
         this.setColor("BLACK");
     }

@@ -1,7 +1,7 @@
 {
   "wordpair": [
-    "Korken",
-    "Weinflasche"
+    "Hemd",
+    "Geschirrtuch"
   ],
   "annotation": [
     [
@@ -13,10 +13,10 @@
     ],
     [
       "1",
-      "0",
-      "0",
-      "vorstudie",
-      "0"
+      "initial",
+      null,
+      null,
+      null
     ]
   ]
 }

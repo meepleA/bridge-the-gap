@@ -1,15 +1,16 @@
 import { Scene } from "phaser";
 
-export class Button extends Phaser.GameObjects.Text {
+export class Button extends Phaser.GameObjects.Sprite {
 
-    constructor(scene, x, y, text, func) {
-        super(scene, x, y, text, { font: "20px Quicksand", fill: "BLACK" });
+    constructor(scene, x, y, spriteKey, func) {
+        super(scene, x, y, spriteKey, 0);
         this.scene.add.existing(this).setOrigin(0, 0);
         this.setInteractive().on('pointerdown', () => {
+            // this.setFrame(2);
             func();
         });
-        this.on('pointerover', () => { this.setColor("#0046aa"); });
-        this.on('pointerout', () => { this.setColor("BLACK"); });
+        this.on('pointerover', () => { this.setFrame(1); });
+        this.on('pointerout', () => { this.setFrame(0); });
     }
 
 }

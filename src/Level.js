@@ -6,6 +6,7 @@ import { PreviewBridge } from "./PreviewBridge";
 import { Word } from "./Word";
 import { Button } from "./Button";
 import { LemmingGroup } from "./LemmingGroup";
+import { fallenLemmingGroup } from "./fallenLemmingGroup";
 import { WordSet } from "./WordSet";
 
 export class Level extends Scene {
@@ -50,27 +51,40 @@ export class Level extends Scene {
     }
 
     preload() {
-        // this.load.image('floor', 'assets/floor.png');
+        this.load.image('floor', 'assets/floor.png');
         this.load.image('background', 'assets/background.png');
         this.load.image('bridge', 'assets/bridge.png');
-        this.load.image('cliff', 'assets/cliff.png');
         this.load.image('pillar', 'assets/pillar.png');
         this.load.image('pillarHighlight', 'assets/pillarHighlight.png');
+        this.load.image('cliffL', 'assets/cliffLeft.png');
+        this.load.image('cliffR', 'assets/cliffRight.png');
         this.load.image('previewBridge', 'assets/previewBridge.png');
-        this.load.image('lemming', 'assets/lemming.png');
+        this.load.image('buttonBg', 'assets/buttonBg.png');
+        this.load.image('wordBg', 'assets/wordBg.png');
+        this.load.image('setBg', 'assets/setBg.png');
+        this.load.spritesheet('lemming', 'assets/lemming.png', { frameWidth: 81, frameHeight: 82 });
+        this.load.spritesheet('otherLevelButton', 'assets/otherLevelButton.png', { frameWidth: 240, frameHeight: 52 });
+        this.load.spritesheet('nextLevelButton', 'assets/nextLevelButton.png', { frameWidth: 270, frameHeight: 72 });
+        // this.load.image('lemming', 'assets/lemming.png');
     }
 
     create() {
-        
+
         console.log(this.words);
+        this.grounds = this.physics.add.group();
+        this.grounds.create(0, 525, 'floor').setOrigin(0, 0);
 
         this.add.image(0, 0, 'background').setOrigin(0, 0);
-        this.lvlCountText = this.add.text(this.cameras.main.width - 100, 30, "Level: " + this.levelCount.toString(), this.textStyle);
+        this.add.image(0, 0, 'setBg').setScale(0.45, 0.75).setOrigin(0, 0);
+        this.add.image(this.cameras.main.width - 10, 70, 'buttonBg').setScale(0.6, 0.6).setOrigin(1, 0);
+        this.lvlCountText = this.add.text(this.cameras.main.width - 100, 20, "Level: " + this.levelCount.toString(), this.textStyle);
         this.createStatics();
         this.createButtons();
 
         this.lemmings = new LemmingGroup(this);
+        this.fallenLemmings = new fallenLemmingGroup(this);
         this.physics.add.collider(this.lemmings.myGroup, this.grounds);
+        // this.physics.add.collider(this.lemmings.myGroup, this.floor);
     }
 
     update() {
@@ -78,12 +92,14 @@ export class Level extends Scene {
         this.checkWin();
 
         if (this.selectedWord != null) {
-            this.selectedWord.setColor("#fe8b68");
+            this.selectedWord.setColor("RED");
         }
 
         // lemmings
         // TODO: floor collision + move back
-        this.lemmings.resetPosition();
+        this.lemmings.animate(this.fallenLemmings.myGroup);
+        this.fallenLemmings.animate(this.lemmings.myGroup);
+        // this.lemmings.resetPosition();
         // preview bridge parts
         this.prevBridges.forEach(element => {
             if (!element.show()) {
@@ -94,7 +110,7 @@ export class Level extends Scene {
     }
 
     createStatics() {
-        this.grounds = this.physics.add.group();
+        // this.grounds = this.physics.add.group();
 
         // instantiate pillars and bridge parts as members of grounds group and set their physics
         for (let i = 0; i < this.givenPillars.length; i++) {
@@ -109,8 +125,8 @@ export class Level extends Scene {
         }
 
         // other ground
-        this.grounds.create(0, 300, 'cliff').setOrigin(0, 0);
-        this.grounds.create(this.pillars[this.pillars.length - 1].x + this.pillars[this.pillars.length - 1].displayWidth, 300, 'cliff').setOrigin(0, 0).setScale(2, 1);
+        this.grounds.create(-11, 300, 'cliffL').setOrigin(0, 0);
+        this.grounds.create(this.pillars[this.pillars.length - 1].x - 8, 300, 'cliffR').setOrigin(0, 0);
 
         this.grounds.children.iterate(function (child) {
             child.body.allowGravity = false;
@@ -120,26 +136,27 @@ export class Level extends Scene {
         // create player's word set
         this.playerWordSet = new WordSet(this);
         for (let i = 0; i < this.words.length; i++) {
+            this.playerWordSet.bgPics.push(this.add.image(0, 0, "wordBg").setOrigin(0, 0));
             this.playerWordSet.addWord(new Word(this, 0, 0, this.words[i].text, this.textStyle, this.pairDist));
         }
-        this.playerWordSet.setWordPositions(20, 25, true, this.cameras.main.width - this.lvlCountText.x + 50);
+        this.playerWordSet.setWordPositions(50, 65, true, 400);
     }
 
     createButtons() {
 
-        this.nextLvlButton = new Button(this, 600, 170, "Nächstes Level", async () => {
+        this.nextLvlButton = new Button(this, this.cameras.main.width - 40, 160, "nextLevelButton", async () => {
 
-            // all data is sent in a single request -> server has to parse full list!
+            // all data is sent as array of json objs in a single request -> server has to parse full list!
             const dataToBeSent = this.loggingValues.map(element => {
                 return { wordpair: element.splice(0, 2), annotation: element }
             })
-            // await this.sendResults(dataToBeSent); 
+            await this.sendResults(dataToBeSent); 
 
             console.log("start new level");
             this.resetVariables();
             this.levelCount++;
 
-            if (this.levelCount % 4 == 0) {
+            if (this.levelCount % 2 == 0) {
                 this.scene.start('bonusLevel', { generalTextStyle: this.textStyle, level: this.levelCount });
             } else {
                 // if(this.levelCount == 5){
@@ -148,9 +165,24 @@ export class Level extends Scene {
                 // }
                 this.scene.start('preview', { level: this.levelCount });
             }
-        });
+        }).setOrigin(1, 0);
 
         this.nextLvlButton.visible = false;
+        this.nextLvlButton.setScale(0.6, 0.6);
+
+        this.otherLevelButton = new Button(this, this.cameras.main.width - 50, 110, "otherLevelButton", async () => {
+            
+            // all data is sent as array of json objs in a single request -> server has to parse full list!
+            const dataToBeSent = this.loggingValues.map(element => {
+                return { wordpair: element.splice(0, 2), annotation: element }
+            })
+            await this.sendResults(dataToBeSent); 
+
+            this.resetVariables();
+            this.scene.start('preview', { level: this.levelCount });
+
+        }).setOrigin(1, 0);
+        this.otherLevelButton.setScale(0.6, 0.6);
     }
 
     changeSelectedWord(word) {
@@ -162,6 +194,10 @@ export class Level extends Scene {
         if (word.enteredPillar != null) {
             let idx = this.pillars.indexOf(word.enteredPillar);
             word.resetPosition();
+            let singleBg = this.playerWordSet.bgPics[this.playerWordSet.getSet().indexOf(word)];
+            singleBg.setPosition(word.x - 5, word.y - 5);
+            singleBg.setAngle(0);
+
             this.pillars[idx].enteredWord = null;
             word.enteredPillar = null;
             if (idx > 0) {
@@ -189,6 +225,11 @@ export class Level extends Scene {
             this.wordIntoPillar(pillar);
 
             this.selectedWord.newPosition(pillar);
+            let singleBg = this.playerWordSet.bgPics[this.playerWordSet.getSet().indexOf(this.selectedWord)];
+            singleBg.setPosition(this.selectedWord.x - 5, this.selectedWord.y + 5);
+            singleBg.setRotation(-1.5708);
+
+            this.selectedWord = null;
 
             this.pillars.forEach(pillar => {
                 pillar.setTexture('pillar');
@@ -222,18 +263,30 @@ export class Level extends Scene {
     logData(otherWord, distance) {
         let wordDist = otherWord.getDist(this.selectedWord);
         let distToLog = distance.toString();
+        let isFirstLog = true;
         console.log(wordDist);
 
-        if (wordDist == -1) {
-            this.selectedWord.addDist(otherWord.text, distance);
-            otherWord.addDist(this.selectedWord.text, distance);
-            wordDist = distance;
-            this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "initial", this.playerID, this.gameMode, this.isBonus]);
+        for (const idx in this.loggingValues) {
+            if (this.loggingValues[idx].includes(this.selectedWord.text) && this.loggingValues[idx].includes(otherWord.text)) {
+                isFirstLog = false;
+            }
+        }
 
-        } else if (distance == wordDist) {
-            this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "correct", this.playerID, this.gameMode, this.isBonus]);
-        } else {
-            this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "wrong", this.playerID, this.gameMode, this.isBonus]);
+        if (isFirstLog) {
+
+            if (wordDist == -1) {
+                this.selectedWord.addDist(otherWord.text, distance);
+                otherWord.addDist(this.selectedWord.text, distance);
+                wordDist = distance;
+                this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "initial", this.playerID, this.gameMode, this.isBonus]);
+
+            } else if (distance == wordDist) {
+                this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "correct", this.playerID, this.gameMode, this.isBonus]);
+            } else {
+                this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "wrong", this.playerID, this.gameMode, this.isBonus]);
+            }
+
+            console.log(this.loggingValues[this.loggingValues.length-1]);
         }
     }
 

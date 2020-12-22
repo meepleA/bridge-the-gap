@@ -1,9 +1,23 @@
 {
   "wordpair": [
-    "Bleistift",
-    "Papiertaschentuch"
+    "Papiertaschentuch",
+    "Bleistift"
   ],
   "annotation": [
+    [
+      "3",
+      "wrong",
+      null,
+      null,
+      null
+    ],
+    [
+      "2",
+      "correct",
+      null,
+      null,
+      null
+    ],
     [
       "2",
       "0",

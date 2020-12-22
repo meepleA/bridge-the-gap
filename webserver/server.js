@@ -68,6 +68,7 @@ server.listen(port, host, () => {
 });
 
 server.post("/wordPairs", (req, res) => {
+    allWordPairs = [];
     const data = req.body;
     console.log(data);
 
@@ -75,9 +76,10 @@ server.post("/wordPairs", (req, res) => {
     readFiles(__dirname + "/data/", function (filename, fileContent) {
         let average = 0;
         fileContent.annotation.forEach(element => {
-            average += element[0];
+            average += parseFloat(element[0]);
         });
-        average = average/fileContent.annotation.length;
+        average = average / fileContent.annotation.length;
+        console.log(filename + " : " + average);
         allWordPairs.push([fileContent.wordpair[0], fileContent.wordpair[1], average]);
     });
 
@@ -86,8 +88,8 @@ server.post("/wordPairs", (req, res) => {
 });
 
 server.post("/levelResult", (req, res) => {
-    // reqValues = { wordpair: [word1, word2], annotation: [distance, error, playerID, mode, bonus] }
-    // save json file
+    // req.body = [{ wordpair: [word1, word2], annotation: [distance, error, playerID, mode, bonus] }, {}, ...]
+    // save json files, TODO: ip checken auf vorhandene einträge
 
     console.log(req.body)
 
@@ -95,19 +97,25 @@ server.post("/levelResult", (req, res) => {
         receivedFilename[0] = elem.wordpair[0] + "-" + elem.wordpair[1] + ".json";
         receivedFilename[1] = elem.wordpair[1] + "-" + elem.wordpair[0] + ".json";
         annotationData = [elem.annotation];
+        let serverFilename;
 
         readFiles(__dirname + "/data/", function (filename, fileContent) {
             if (filename == receivedFilename[0] || filename == receivedFilename[1]) {
                 fileContent.annotation.forEach(element => {
                     annotationData.push(element);
+                    serverFilename = filename;
                 });
             }
         });
         let jsonData = JSON.stringify({ wordpair: elem.wordpair, annotation: annotationData }, null, 2);
-        fs.writeFileSync(__dirname + "/data/" + receivedFilename[0], jsonData);
+        if (serverFilename != null) {
+            fs.writeFileSync(__dirname + "/data/" + serverFilename, jsonData);
+        } else {
+            fs.writeFileSync(__dirname + "/data/" + receivedFilename[0], jsonData);
+        }
     }
 
-    res.json({ finished: "oh yeah"});
+    res.json({ finished: "oh yeah" });
 });
 
 

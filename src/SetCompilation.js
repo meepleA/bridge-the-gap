@@ -33,21 +33,26 @@ export class SetCompilation extends Scene {
     }
 
     preload() {
-        this.load.image('background', 'assets/background.png');
+        this.load.image('setCompilationBg', 'assets/setCompilationBg.png');
+        this.load.image('setBg', 'assets/setBg.png');
+        this.load.image('wordBg', 'assets/wordBg.png');
+        this.load.spritesheet('toBridgeButton', 'assets/toBridgeButton.png', { frameWidth: 293, frameHeight: 283 });
     }
 
     async create() {
         // server, scenen manager
         this.allWordPairs = [];
-        this.hardCodeWordPairs(this.allWordPairs);
-        // const fetchPromise = await this.getWordPairs(this.allWordPairs);
+        // this.hardCodeWordPairs(this.allWordPairs);
+        const fetchPromise = await this.getWordPairs();
 
         this.allSingleWords = this.getAllWithoutDoubles(this.allWordPairs);
         this.set = new WordSet(this);
         this.pool = [];
 
-        this.add.image(0, 0, 'background').setOrigin(0, 0);
-        this.lvlCountText = this.add.text(this.cameras.main.width - 100, 30, "Level: " + this.levelCount.toString(), this.textStyle);
+        this.add.image(0, 0, 'setCompilationBg').setScale(0.55, 0.67).setOrigin(0, 0);
+        this.add.image(0, 0, 'setBg').setScale(0.45, 0.75).setOrigin(0, 0);
+
+        this.lvlCountText = this.add.text(this.cameras.main.width - 100, 20, "Level: " + this.levelCount.toString(), this.textStyle);
         this.createButtons();
         this.createPool();
 
@@ -55,14 +60,17 @@ export class SetCompilation extends Scene {
 
     update() {
         // display the chosen word set
-        this.set.setWordPositions(20, 25, false, this.cameras.main.width - this.lvlCountText.x + 50);
+        if (this.set.length != 0) {
+            this.set.setWordPositions(50, 65, false, 400);
+        }
     }
 
     createButtons() {
-        this.finishButton = new Button(this, 700, 170, "Weiter", () => {
+        this.finishButton = new Button(this, this.cameras.main.width - 10, 200, "toBridgeButton", () => {
             this.scene.start("level", { generalTextStyle: this.textStyle, level: this.levelCount, pairDist: this.allWordPairs, wordSet: this.set.getSet(), pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
-        });
+        }).setOrigin(1, 0);
         this.finishButton.visible = false;
+        this.finishButton.setScale(0.5, 0.5);
     }
 
     createPool() {
@@ -75,16 +83,25 @@ export class SetCompilation extends Scene {
 
         this.poolWords = new WordSet(this);
         this.pool.forEach(element => {
+            this.poolWords.bgPics.push(this.add.image(0, 0, "wordBg").setOrigin(0, 0));
             this.poolWords.addWord(new PoolWord(this, 0, 0, this.textStyle, element));
         });
-        this.poolWords.setWordPositions(20, 300, true, 20);
+        this.poolWords.setWordPositions(20, 370, true, 100);
     }
 
     selectWord(word) {
         if (this.set.getSet().includes(word)) {
+
+            let singleBg = this.set.bgPics[this.set.getSet().indexOf(word)];
+            this.set.bgPics.splice(this.set.getSet().indexOf(word), 1);
+
             this.set.spliceWords(this.set.getSet().indexOf(word), 1);
             word.setPosition(word.originalX, word.originalY);
+
+            singleBg.setPosition(word.x - 5, word.y - 5);
+
         } else if (this.set.getSet().length < this.pillars.length) {
+            this.set.bgPics.push(this.poolWords.bgPics[this.poolWords.getSet().indexOf(word)]);
             this.set.addWord(word);
         }
 
@@ -124,7 +141,7 @@ export class SetCompilation extends Scene {
     }
 
     // TODO: unterscheidung studie - free play
-    getWordPairs(resultArray) {
+    getWordPairs() {
         return fetch("/wordPairs", {
             method: "POST",
             headers: {
@@ -135,7 +152,7 @@ export class SetCompilation extends Scene {
             .then(response => response.json())
             .then(jsonObj => {
                 console.log(jsonObj.array[0]);
-                resultArray = jsonObj.array;
+                this.allWordPairs = jsonObj.array;
             })
             .catch(function (error) {
                 console.log(error);

@@ -33,15 +33,24 @@ export class BonusLevel extends Scene {
 
     preload() {
         this.load.image('background', 'assets/background.png');
+        this.load.image('cliffL', 'assets/cliffLeft.png');
+        this.load.image('cliffR', 'assets/cliffRight.png');
+        this.load.image('pillar', 'assets/pillar.png');
     }
 
     async create() {
-        // server, scenen manager
         this.allWordPairs = [];
-        this.setCompilationObj.hardCodeWordPairs(this.allWordPairs);
-        // await this.setCompilationObj.getWordPairs(this.allWordPairs);
+        this.allSingleWords = [];
+        this.pillars = [];
+        this.bridgeParts = [];
+        this.set = [];
+        
+        // this.setCompilationObj.hardCodeWordPairs(this.allWordPairs);
+        await this.getWordPairs();
+        console.log(this.allWordPairs);
 
         this.allSingleWords = this.setCompilationObj.getAllWithoutDoubles(this.allWordPairs);
+        console.log(this.allSingleWords);
         this.set = [];
 
         this.add.image(0, 0, 'background').setOrigin(0, 0);
@@ -51,6 +60,7 @@ export class BonusLevel extends Scene {
         this.set = this.compileSet();
         // show level   
         console.log(this.set);
+        console.log(this.previewObj.pillarWidth);
         this.levelAnnouncement();
     }
 
@@ -101,7 +111,7 @@ export class BonusLevel extends Scene {
         partialLengths.forEach(element => {
             totalBridgeLength += element * this.previewObj.bridgeWidth + this.previewObj.pillarWidth;
         });
-        if(totalBridgeLength <= 500 ){
+        if(totalBridgeLength <= 400 ){
             return false;
         }   
         console.log(partialLengths);
@@ -113,8 +123,8 @@ export class BonusLevel extends Scene {
     createBridge() {
 
         let bridgeLengths = this.getBridgeLengths();
-        this.pillars[0] = new Pillar(this, 100, 300);
-        this.bridgeParts.push(new Bridge(this, 100 + this.previewObj.pillarWidth, 300, bridgeLengths[0]));
+        this.pillars[0] = new Pillar(this, 150, 300);
+        this.bridgeParts.push(new Bridge(this, 150 + this.previewObj.pillarWidth, 300, bridgeLengths[0]));
 
         for (let i = 1; i < bridgeLengths.length; i++) {
             let xPos = this.previewObj.pillarWidth + this.bridgeParts[i - 1].x + this.bridgeParts[i - 1].displayWidth;
@@ -125,8 +135,8 @@ export class BonusLevel extends Scene {
             this.pillars.push(new Pillar(this, this.bridgeParts[i - 1].x + this.bridgeParts[i - 1].displayWidth, 300));
         }
 
-        this.add.image(0, 300, 'cliff').setOrigin(0, 0);
-        this.add.image(this.pillars[this.pillars.length - 1].x + this.pillars[this.pillars.length - 1].displayWidth, 300, 'cliff').setOrigin(0, 0).setScale(2, 1);
+        this.add.image(-11, 300, 'cliffL').setOrigin(0, 0);
+        this.add.image(this.pillars[this.pillars.length - 1].x - 8, 300, 'cliffR').setOrigin(0, 0);
 
         console.log(this.getBridgeLengths().length);
     }
@@ -172,5 +182,24 @@ export class BonusLevel extends Scene {
             });
         }
         return lengths;
+    }
+
+    // TODO: unterscheidung studie - free play
+    getWordPairs() {
+        return fetch("/wordPairs", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ test: "greetings from the client" })
+        })
+            .then(response => response.json())
+            .then(jsonObj => {
+                // console.log(jsonObj.array[0]);
+                this.allWordPairs = jsonObj.array;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 }
