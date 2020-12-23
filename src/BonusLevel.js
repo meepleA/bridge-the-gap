@@ -12,6 +12,7 @@ export class BonusLevel extends Scene {
 
         // data from previous scene
         this.levelCount;
+        this.totalLevelCount;
         this.textStyle;
 
         // server, scenen manager
@@ -27,7 +28,8 @@ export class BonusLevel extends Scene {
     }
 
     init(data) {
-        this.levelCount = data.level;
+        this.levelCount = data.level[0];
+        this.totalLevelCount = data.level[1];
         this.textStyle = data.generalTextStyle;
     }
 
@@ -44,7 +46,7 @@ export class BonusLevel extends Scene {
         this.pillars = [];
         this.bridgeParts = [];
         this.set = [];
-        
+
         // this.setCompilationObj.hardCodeWordPairs(this.allWordPairs);
         await this.getWordPairs();
         console.log(this.allWordPairs);
@@ -155,7 +157,7 @@ export class BonusLevel extends Scene {
     }
 
     startLevel() {
-        this.scene.start("level", { generalTextStyle: this.textStyle, level: this.levelCount, pairDist: this.allWordPairs, wordSet: this.set, pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
+        this.scene.start("level", { generalTextStyle: this.textStyle, level: [this.levelCount, this.totalLevelCount], pairDist: this.allWordPairs, wordSet: this.set, pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
     }
 
     getRand(arr){

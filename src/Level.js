@@ -19,11 +19,11 @@ export class Level extends Scene {
 
         // data from previous scene
         this.levelCount;
+        this.totalLevelCount;
         this.pairDist = [];
         this.words = [];
         this.givenPillars;
         this.givenBridgeParts;
-        this.levelCount;
         this.textStyle;
         // TODO: server, scenen manager
         // strings
@@ -42,7 +42,8 @@ export class Level extends Scene {
     }
 
     init(data) {
-        this.levelCount = data.level;
+        this.levelCount = data.level[0];
+        this.totalLevelCount = data.level[1];
         this.textStyle = data.generalTextStyle;
         this.pairDist = data.pairDist;
         this.words = data.wordSet;
@@ -155,15 +156,16 @@ export class Level extends Scene {
             console.log("start new level");
             this.resetVariables();
             this.levelCount++;
+            this.totalLevelCount++;
 
             // TODO abhängig von internal counter
-            if (this.levelCount == 2) {
+            if (this.totalLevelCount == 2) {
                 // end game
                 this.scene.start('endStudy');
-                 } else if (this.levelCount % 2 == 0) {
-                this.scene.start('bonusLevel', { generalTextStyle: this.textStyle, level: this.levelCount });
+                 } else if (this.totalLevelCount % 2 == 0) {
+                this.scene.start('bonusLevel', { generalTextStyle: this.textStyle, level: [this.levelCount, this.totalLevelCount] });
             } else  {
-                this.scene.start('preview', { level: this.levelCount });
+                this.scene.start('preview', { level: [this.levelCount, this.totalLevelCount] });
             }
 
         }).setOrigin(1, 0);
@@ -180,7 +182,8 @@ export class Level extends Scene {
             await this.sendResults(dataToBeSent);
 
             this.resetVariables();
-            this.scene.start('preview', { level: this.levelCount });
+            this.totalLevelCount++;
+            this.scene.start('preview', { level: [this.levelCount, this.totalLevelCount] });
 
         }).setOrigin(1, 0);
         this.otherLevelButton.setScale(0.6, 0.6);

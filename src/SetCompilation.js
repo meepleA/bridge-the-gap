@@ -10,6 +10,7 @@ export class SetCompilation extends Scene {
 
         // data from previous scene
         this.levelCount;
+        this.totalLevelCount;
         this.textStyle;
         this.pillars;
         this.bridgeParts;
@@ -26,7 +27,8 @@ export class SetCompilation extends Scene {
     }
 
     init(data) {
-        this.levelCount = data.level;
+        this.levelCount = data.level[0];
+        this.totalLevelCount = data.level[1];
         this.textStyle = data.generalTextStyle;
         this.pillars = data.pillarArr;
         this.bridgeParts = data.bridgePartArr;
@@ -67,7 +69,7 @@ export class SetCompilation extends Scene {
 
     createButtons() {
         this.finishButton = new Button(this, this.cameras.main.width - 10, 200, "toBridgeButton", () => {
-            this.scene.start("level", { generalTextStyle: this.textStyle, level: this.levelCount, pairDist: this.allWordPairs, wordSet: this.set.getSet(), pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
+            this.scene.start("level", { generalTextStyle: this.textStyle, level: [this.levelCount, this.totalLevelCount], pairDist: this.allWordPairs, wordSet: this.set.getSet(), pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
         }).setOrigin(1, 0);
         this.finishButton.visible = false;
         this.finishButton.setScale(0.5, 0.5);

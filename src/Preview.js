@@ -10,6 +10,7 @@ export class Preview extends Scene {
 
         // data from previous scene
         this.levelCount;
+        this.totalLevelCount;
 
         this.textStyle = { font: "20px Quicksand", fill: "BLACK" };
         this.pillars = [];
@@ -26,7 +27,8 @@ export class Preview extends Scene {
     }
 
     init(data) {
-        this.levelCount = data.level;
+        this.levelCount = data.level[0];
+        this.totalLevelCount = data.level[1];
     }
 
     preload() {
@@ -53,7 +55,7 @@ export class Preview extends Scene {
         this.createBridge();
 
         this.skipButton = new Button(this, 0, 100, 'auswahlButton', () => {
-            this.scene.start("set", { generalTextStyle: this.textStyle, level: this.levelCount, pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
+            this.scene.start("set", { generalTextStyle: this.textStyle, level: [this.levelCount, this.totalLevelCount], pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
         });
         this.skipButton.setScale(0.6, 0.6);
         this.skipButton.setPosition(this.cameras.main.width - this.skipButton.displayWidth - 10, 100);
@@ -71,7 +73,7 @@ export class Preview extends Scene {
         //     //
         // } else {
             if (this.counter == -1) {
-                this.scene.start("set", { generalTextStyle: this.textStyle, level: this.levelCount, pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
+                this.scene.start("set", { generalTextStyle: this.textStyle, level: [this.levelCount, this.totalLevelCount], pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
             } else {
                 this.countdown.setText(this.counter.toString());
             }

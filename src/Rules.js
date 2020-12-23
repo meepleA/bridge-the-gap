@@ -1,49 +1,103 @@
-import { Scene, Scenes } from "phaser";
+import { Scene } from "phaser";
 import { Button } from "./Button";
 
 export class Rules extends Scene {
 
     constructor() {
         super({ key: "rules" });
-        this.explanation = "Das Ziel: \n Baue eine Brücke, damit die Lemminge über den Fluss kommen. \n \n Pragmatische Distanz: \n Zwei Objekte sind sich pragmatisch nahe, wenn du sie intuitiv zusammen benutzen würdest.";
+        this.introText = ["Hilf den Lemmingen über den Fluss!", "", "Baue ihnen eine Brücke, indem du benachbarte Pfeiler mit Wörtern füllst, dessen pragmatische Distanz dem Abstand zwischen den jeweiligen Pfeilern entspricht. \n", "\n", "Pragmatische Distanz? \n Zwei Wörter haben eine kürzere Distanz, je eher du die Objekte, die sie beschreiben, intuitiv zusammen benutzen würdest. Es gibt insgesamt 3 Abstufungen."];
+        this.prepText = ["Ablauf eines Levels: \n", "", "1. Eine Zeit begrenzte Vorschau zeigt dir die verschiedenen Abstände der Brückenpfeiler \n", "", "\n", "2. Stelle dir aus einem Pool von Wörtern ein Set zusammen, mit dem du die Brücke bauen möchtest"];
+        this.lvlText = ["3. Wähle ein Wort, dann einen Pfeiler, um es diesem zuzuordnen. Zugeordnete Wörter können durch erneutes anwählen wieder zurückgenommen werden. Eine Vorschau zeigt dir, welche Distanz benachbarte Wörter haben. Stimmt diese mit dem Abstand der Pfeiler überein, wird ein Brückenteil gelegt."];
         this.currentScreen;
-        this.scenePic;
-        this.paragraph;
+        this.intro;
+        this.tutorial;
+        this.lvlExpl;
+        this.textPos = [140, 95];
+
+        this.prevSnip;
+        this.setSnip;
+        this.lvlSnip;
+
+        this.nextButton;
+        this.backButton;
+        this.goButton;
     }
 
     preload() {
         this.load.image('rulesBg', 'assets/rulesBg.png');
-        this.load.image('previewPic', 'assets/tutorialPic1.png');
-        this.load.image('wordSelectionPic', 'assets/tutorialPic2.png');
+        this.load.image('previewSnippet', 'assets/previewSnippet.png');
+        this.load.image('setCompilationSnippet', 'assets/setCompilationSnippet.png');
+        this.load.image('levelSnippet', 'assets/levelSnippet.png');
         this.load.spritesheet('nextButton', 'assets/nextButton.png', { frameWidth: 293, frameHeight: 283 });
+        this.load.spritesheet('backButton', 'assets/backButton.png', { frameWidth: 293, frameHeight: 284 });
+        this.load.spritesheet('goButton', 'assets/goButton.png', { frameWidth: 294, frameHeight: 283 });
     }
 
     create() {
         this.currentScreen = 0;
-        this.scenePic = this.add.image(0, 0, 'rulesBg').setScale(0.55, 0.67).setOrigin(0, 0);
+        this.add.image(-30, -20, 'rulesBg').setScale(0.56, 0.69).setOrigin(0, 0);
 
         let rt = this.add.renderTexture(0, 0, this.cameras.main.width, this.cameras.main.height);
         rt.fill(0xffffff, 0.5);
 
-        let style = { font: "20px Quicksand", fill: "#000000", align: "center", wordWrap: { width: 600, useAdvancedWrap: true }, lineSpacing: 20};
-        this.paragraph = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, this.explanation, style).setOrigin(0.5, 0.5);
-        
-        
-        this.rulesButton = new Button(this, this.cameras.main.centerX, this.cameras.main.centerY, "nextButton", () => {
-            if(this.currentScreen == 2){
-                this.scene.start("tutorial");
-            } else {
-                this.paragraph.visible = false;
-                this.currentScreen ++;
-            }
-            
-        });
-        this.rulesButton.setPosition(this.cameras.main.width - this.rulesButton.displayWidth/2 - 10, this.cameras.main.height - this.rulesButton.displayHeight/2 + 30);
-        this.rulesButton.setScale(0.5, 0.5);
+        let textCenter = [this.cameras.main.width - (this.cameras.main.width - this.textPos[0]) / 2, this.cameras.main.height - (this.cameras.main.height - this.textPos[1]) / 2]
+        this.prevSnip = this.add.image(this.textPos[0], this.textPos[1] + 30, 'previewSnippet').setScale(0.3, 0.3).setOrigin(0, 0);
+        this.setSnip = this.add.image(this.prevSnip.x, this.prevSnip.y + this.prevSnip.displayHeight + 30, 'setCompilationSnippet').setScale(0.3, 0.3).setOrigin(0, 0);
+
+        let style = { font: "20px Quicksand", fill: "#000000", wordWrap: { width: 600, useAdvancedWrap: true }, lineSpacing: 10 };
+        let narrowStyle = { font: "20px Quicksand", fill: "#000000", wordWrap: { width: 370, useAdvancedWrap: true }, lineSpacing: 10 };
+        this.intro = this.add.text(this.textPos[0], this.textPos[1], this.introText, style).setOrigin(0, 0);
+        this.tutorial = this.add.text(this.textPos[0] + this.prevSnip.displayWidth + 30, this.textPos[1], this.prepText, narrowStyle).setOrigin(0, 0);
+        this.lvlExpl = this.add.text(this.textPos[0], this.textPos[1], this.lvlText, style).setOrigin(0, 0);
+
+        this.lvlSnip = this.add.image(this.cameras.main.width / 2, this.lvlExpl.y + this.lvlExpl.displayHeight + 30, 'levelSnippet').setScale(0.35, 0.35).setOrigin(0.5, 0);
+
+        this.nextButton = new Button(this, 0, 0, "nextButton", () => { this.currentScreen++; });
+        this.nextButton.setPosition(this.cameras.main.width - this.nextButton.displayWidth / 2 - 20, this.cameras.main.height - this.nextButton.displayHeight / 2 + 40)
+            .setScale(0.5, 0.5);
+
+        this.backButton = new Button(this, 0, 0, "backButton", () => { this.currentScreen--; }).setOrigin(0, 0);
+        this.backButton.setPosition(20, this.cameras.main.height - this.backButton.displayHeight / 2 + 40)
+            .setScale(0.5, 0.5);
+
+        this.goButton = new Button(this, 0, 0, "goButton", () => { this.scene.start("preview", { level: [1, 1] }); });
+        this.goButton.setPosition(this.cameras.main.width - this.nextButton.displayWidth - 20, this.cameras.main.height - this.nextButton.displayHeight + 40)
+            .setScale(0.5, 0.5);
     }
 
-    update(){
+    update() {
 
+        this.intro.visible = false;
+        this.tutorial.visible = false;
+        this.nextButton.visible = true;
+        this.backButton.visible = false;
+        this.goButton.visible = false;
+        this.prevSnip.visible = false;
+        this.setSnip.visible = false;
+        this.lvlSnip.visible = false;
+        this.lvlExpl.visible = false;
+
+        switch (this.currentScreen) {
+
+            case 1:
+                this.tutorial.visible = true;
+                this.prevSnip.visible = true;
+                this.setSnip.visible = true;
+                this.backButton.visible = true;
+                break;
+
+            case 2:
+                this.lvlSnip.visible = true;
+                this.lvlExpl.visible = true;
+                this.backButton.visible = true;
+                this.nextButton.visible = false;
+                this.goButton.visible = true;
+                break;
+
+            default:
+                this.intro.visible = true;
+                break;
+        }
     }
 
 }
