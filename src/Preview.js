@@ -2,6 +2,7 @@ import { Scene } from "phaser";
 import { Pillar } from "./Pillar";
 import { Bridge } from "./Bridge";
 import { Button } from "./Button";
+import { myGame } from "./globalVariables";
 
 export class Preview extends Scene {
 
@@ -12,7 +13,7 @@ export class Preview extends Scene {
         this.levelCount;
         this.totalLevelCount;
 
-        this.textStyle = { font: "20px Quicksand", fill: "BLACK" };
+        this.textStyle = myGame.textStyle;
         this.pillars = [];
         this.bridgeParts = [];
         // TODO: random brückenlängen ermitteln
@@ -24,6 +25,7 @@ export class Preview extends Scene {
 
         this.counter;
         this.countdown;
+        this.bridgeConstructYPos;
     }
 
     init(data) {
@@ -39,9 +41,11 @@ export class Preview extends Scene {
         this.load.image('cliffL', 'assets/cliffLeft.png');
         this.load.image('cliffR', 'assets/cliffRight.png');
         this.load.spritesheet('auswahlButton', 'assets/auswahlButton.png', { frameWidth: 294, frameHeight: 85 });
+        this.load.spritesheet('stone', 'assets/stone.png', { frameWidth: 45, frameHeight: 36 });
     }
 
     create() {
+        this.bridgeConstructYPos = myGame.bridgeYPos;
         this.pillars = [];
         this.bridgeParts = [];
         this.bridgeLengths = [];
@@ -55,29 +59,21 @@ export class Preview extends Scene {
         this.createBridge();
 
         this.skipButton = new Button(this, 0, 100, 'auswahlButton', () => {
-            this.scene.start("set", { generalTextStyle: this.textStyle, level: [this.levelCount, this.totalLevelCount], pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
+            this.scene.start("set", { level: [this.levelCount, this.totalLevelCount], pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
         });
         this.skipButton.setScale(0.6, 0.6);
         this.skipButton.setPosition(this.cameras.main.width - this.skipButton.displayWidth - 10, 100);
 
-        // if (this.levelCount == 1) {
-        //     this.scene.start("bonusLevel", { generalTextStyle: this.textStyle, level: this.levelCount });
-        // } else {
             this.countdown = this.add.text(this.cameras.main.centerX, 30, this.counter.toString(), this.textStyle);
             this.timedEvent = this.time.addEvent({ delay: 1000, callback: () => { this.counter--; console.log }, callbackScope: this, loop: true });
-        // }
     }
 
     update() {
-        // if (this.levelCount == 1) {
-        //     //
-        // } else {
             if (this.counter == -1) {
-                this.scene.start("set", { generalTextStyle: this.textStyle, level: [this.levelCount, this.totalLevelCount], pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
+                this.scene.start("set", { level: [this.levelCount, this.totalLevelCount], pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
             } else {
                 this.countdown.setText(this.counter.toString());
             }
-        // }
     }
 
     // calculate random bridge lengths
@@ -85,32 +81,41 @@ export class Preview extends Scene {
 
         this.totalLength = this.pillarWidth;
 
-        while (this.totalLength <= 650 - this.bridgeWidth - this.pillarWidth - 200) {
-            let rand = Math.floor(Math.random() * 3) + 1;
-            if (this.totalLength + rand * this.bridgeWidth + this.pillarWidth <= 700) {
+        while (this.totalLength <= this.cameras.main.width - 150 - this.bridgeWidth - this.pillarWidth - 150) {
+            let rand = Math.floor(Math.random() * 6) + 1;
+            if (this.totalLength + rand * this.bridgeWidth + this.pillarWidth <= this.cameras.main.width - 200) {
                 this.bridgeLengths.push(rand);
                 this.totalLength += rand * this.bridgeWidth + this.pillarWidth;
             }
         }
     }
 
-    // instantiate pillars and bridge parts
+    // instantiate pillars and bridge parts and stones
     createBridge() {
 
-        this.pillars[0] = new Pillar(this, 150, 300);
-        this.bridgeParts.push(new Bridge(this, 150 + this.pillarWidth, 300, this.bridgeLengths[0]));
+        this.pillars[0] = new Pillar(this, 150, this.bridgeConstructYPos);
+        this.bridgeParts.push(new Bridge(this, 150 + this.pillarWidth, this.bridgeConstructYPos, this.bridgeLengths[0]));
 
         for (let i = 1; i < this.bridgeLengths.length; i++) {
             let xPos = this.pillarWidth + this.bridgeParts[i - 1].x + this.bridgeParts[i - 1].displayWidth;
-            this.bridgeParts.push(new Bridge(this, xPos, 300, this.bridgeLengths[i]));
+            this.bridgeParts.push(new Bridge(this, xPos, this.bridgeConstructYPos, this.bridgeLengths[i]));
         }
 
         for (let i = 1; i < this.numberOfPillars; i++) {
-            this.pillars.push(new Pillar(this, this.bridgeParts[i - 1].x + this.bridgeParts[i - 1].displayWidth, 300));
+            this.pillars.push(new Pillar(this, this.bridgeParts[i - 1].x + this.bridgeParts[i - 1].displayWidth, this.bridgeConstructYPos));
         }
 
-        this.add.image(-11, 300, 'cliffL').setOrigin(0, 0);
-        this.add.image(this.pillars[this.pillars.length - 1].x - 8, 300, 'cliffR').setOrigin(0, 0);
+        // add dist stones
+        for(let i = 0; i < this.bridgeParts.length; i++){
+            for(let k = 1; k < this.bridgeParts[i].dist; k++){
+                let xPos = this.bridgeParts[i].x + this.bridgeParts[i].displayWidth/this.bridgeParts[i].dist * k;
+                let yPos = this.bridgeConstructYPos + this.pillars[0].displayHeight - 30;
+                this.add.sprite(xPos, yPos, "stone", Math.floor(Math.random() * 3)).setScale(0.5, 0.5);
+            }
+        }
+
+        this.add.image(-11, this.bridgeConstructYPos, 'cliffL').setOrigin(0, 0);
+        this.add.image(this.pillars[this.pillars.length - 1].x - 8, this.bridgeConstructYPos, 'cliffR').setOrigin(0, 0);
 
     }
 }

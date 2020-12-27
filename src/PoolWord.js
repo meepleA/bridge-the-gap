@@ -1,8 +1,9 @@
+import { myGame } from "./globalVariables";
 
 export class PoolWord extends Phaser.GameObjects.Text {
 
-    constructor(scenep, x, y, style, text) {      
-        super(scenep, x, y, text, style);
+    constructor(scenep, x, y, text) {      
+        super(scenep, x, y, text, myGame.textStyle);
         this.scene = scenep;
         this.originalX = x;
         this.originalY = y;

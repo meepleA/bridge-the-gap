@@ -8,6 +8,7 @@ import { Button } from "./Button";
 import { LemmingGroup } from "./LemmingGroup";
 import { fallenLemmingGroup } from "./fallenLemmingGroup";
 import { WordSet } from "./WordSet";
+import { myGame } from "./globalVariables";
 
 export class Level extends Scene {
 
@@ -24,12 +25,11 @@ export class Level extends Scene {
         this.words = [];
         this.givenPillars;
         this.givenBridgeParts;
-        this.textStyle;
+        this.textStyle = myGame.textStyle;
         // TODO: server, scenen manager
         // strings
-        this.playerID;
-        this.gameMode;
-        this.isBonus;
+        this.gameMode = "study";
+        this.isBonus = "standard";
 
         this.playerWordSet;
         this.selectedWord;
@@ -44,7 +44,6 @@ export class Level extends Scene {
     init(data) {
         this.levelCount = data.level[0];
         this.totalLevelCount = data.level[1];
-        this.textStyle = data.generalTextStyle;
         this.pairDist = data.pairDist;
         this.words = data.wordSet;
         this.givenPillars = data.pillarArr;
@@ -54,7 +53,7 @@ export class Level extends Scene {
     preload() {
         this.load.image('floor', 'assets/floor.png');
         this.load.image('background', 'assets/background.png');
-        this.load.image('bridge', 'assets/bridge.png');
+        this.load.image('bridge', 'assets/bridge.svg');
         this.load.image('pillar', 'assets/pillar.png');
         this.load.image('pillarHighlight', 'assets/pillarHighlight.png');
         this.load.image('cliffL', 'assets/cliffLeft.png');
@@ -66,17 +65,18 @@ export class Level extends Scene {
         this.load.spritesheet('lemming', 'assets/lemming.png', { frameWidth: 81, frameHeight: 82 });
         this.load.spritesheet('otherLevelButton', 'assets/otherLevelButton.png', { frameWidth: 240, frameHeight: 52 });
         this.load.spritesheet('nextLevelButton', 'assets/nextLevelButton.png', { frameWidth: 270, frameHeight: 72 });
-        // this.load.image('lemming', 'assets/lemming.png');
+        this.load.spritesheet('stone', 'assets/stone.png', { frameWidth: 45, frameHeight: 36 });
     }
 
     create() {
 
         console.log(this.words);
         this.grounds = this.physics.add.group();
-        this.grounds.create(0, 525, 'floor').setOrigin(0, 0);
+        let floor = this.physics.add.image(0, this.cameras.main.height - 75, 'floor').setScale(2, 1).setOrigin(0, 0);
+        this.grounds.add(floor);
 
         this.add.image(0, 0, 'background').setOrigin(0, 0);
-        this.add.image(0, 0, 'setBg').setScale(0.45, 0.75).setOrigin(0, 0);
+        this.add.image(0, 0, 'setBg').setScale(0.8, 0.75).setOrigin(0, 0);
         this.add.image(this.cameras.main.width - 10, 70, 'buttonBg').setScale(0.6, 0.6).setOrigin(1, 0);
         this.lvlCountText = this.add.text(this.cameras.main.width - 100, 20, "Level: " + this.levelCount.toString(), this.textStyle);
         this.createStatics();
@@ -85,7 +85,7 @@ export class Level extends Scene {
         this.lemmings = new LemmingGroup(this);
         this.fallenLemmings = new fallenLemmingGroup(this);
         this.physics.add.collider(this.lemmings.myGroup, this.grounds);
-        // this.physics.add.collider(this.lemmings.myGroup, this.floor);
+        this.physics.add.collider(this.fallenLemmings.myGroup, floor);
     }
 
     update() {
@@ -126,21 +126,32 @@ export class Level extends Scene {
         }
 
         // other ground
-        this.grounds.create(-11, 300, 'cliffL').setOrigin(0, 0);
-        this.grounds.create(this.pillars[this.pillars.length - 1].x - 8, 300, 'cliffR').setOrigin(0, 0);
+        this.grounds.create(-165, this.cameras.main.height - 300, 'cliffL').setOrigin(0, 0);
+        this.grounds.create(-11, this.cameras.main.height - 300, 'cliffL').setOrigin(0, 0);
+        this.grounds.create(this.pillars[this.pillars.length - 1].x - 8, this.cameras.main.height - 300, 'cliffR').setOrigin(0, 0);
 
         this.grounds.children.iterate(function (child) {
             child.body.allowGravity = false;
             child.body.immovable = true;
         });
 
+        // add dist stones
+        for(let i = 0; i < this.bridgeParts.length; i++){
+            for(let k = 1; k < this.bridgeParts[i].dist; k++){
+                let xPos = this.bridgeParts[i].x + this.bridgeParts[i].displayWidth/this.bridgeParts[i].dist * k;
+                let yPos = myGame.bridgeYPos + this.pillars[0].displayHeight - 30;
+                this.add.sprite(xPos, yPos, "stone", Math.floor(Math.random() * 3)).setScale(0.5, 0.5);
+                console.log("add stone");
+            }
+        }
+
         // create player's word set
         this.playerWordSet = new WordSet(this);
         for (let i = 0; i < this.words.length; i++) {
             this.playerWordSet.bgPics.push(this.add.image(0, 0, "wordBg").setOrigin(0, 0));
-            this.playerWordSet.addWord(new Word(this, 0, 0, this.words[i].text, this.textStyle, this.pairDist));
+            this.playerWordSet.addWord(new Word(this, 0, 0, this.words[i].text, this.pairDist));
         }
-        this.playerWordSet.setWordPositions(50, 65, true, 400);
+        this.playerWordSet.setWordPositions(50, 75, true, 480);
     }
 
     createButtons() {
@@ -159,12 +170,12 @@ export class Level extends Scene {
             this.totalLevelCount++;
 
             // TODO abhängig von internal counter
-            if (this.totalLevelCount == 2) {
+            if (this.totalLevelCount == 9) {
                 // end game
                 this.scene.start('endStudy');
-                 } else if (this.totalLevelCount % 2 == 0) {
-                this.scene.start('bonusLevel', { generalTextStyle: this.textStyle, level: [this.levelCount, this.totalLevelCount] });
-            } else  {
+            } else if (this.totalLevelCount % 4 == 0) {
+                this.scene.start('bonusLevel', { level: [this.levelCount, this.totalLevelCount] });
+            } else {
                 this.scene.start('preview', { level: [this.levelCount, this.totalLevelCount] });
             }
 
@@ -183,7 +194,15 @@ export class Level extends Scene {
 
             this.resetVariables();
             this.totalLevelCount++;
-            this.scene.start('preview', { level: [this.levelCount, this.totalLevelCount] });
+
+            if (this.totalLevelCount == 9) {
+                // end game
+                this.scene.start('endStudy');
+            } else if (this.totalLevelCount % 4 == 0) {
+                this.scene.start('bonusLevel', { level: [this.levelCount, this.totalLevelCount] });
+            }else {
+                this.scene.start('preview', { level: [this.levelCount, this.totalLevelCount] });
+            }
 
         }).setOrigin(1, 0);
         this.otherLevelButton.setScale(0.6, 0.6);
@@ -266,6 +285,7 @@ export class Level extends Scene {
 
     logData(otherWord, distance) {
         let wordDist = otherWord.getDist(this.selectedWord);
+        let distVersion = otherWord.getDistVersion(this.selectedWord);
         let distToLog = distance.toString();
         let isFirstLog = true;
         console.log(wordDist);
@@ -276,18 +296,23 @@ export class Level extends Scene {
             }
         }
 
+        console.log(this.totalLevelCount);
         if (isFirstLog) {
+            if(this.totalLevelCount % 4 == 0){
+                this.isBonus = "bonus";
+                console.log("bonus!!")
+            }
 
             if (wordDist == -1) {
                 this.selectedWord.addDist(otherWord.text, distance);
                 otherWord.addDist(this.selectedWord.text, distance);
                 wordDist = distance;
-                this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "initial", this.playerID, this.gameMode, this.isBonus]);
+                this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "initial", localStorage.getItem("playerStorageKey"), this.gameMode, this.isBonus, distVersion]);
 
             } else if (distance == wordDist) {
-                this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "correct", this.playerID, this.gameMode, this.isBonus]);
+                this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "correct", localStorage.getItem("playerStorageKey"), this.gameMode, this.isBonus, distVersion]);
             } else {
-                this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "wrong", this.playerID, this.gameMode, this.isBonus]);
+                this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "wrong", localStorage.getItem("playerStorageKey"), this.gameMode, this.isBonus, distVersion]);
             }
 
             console.log(this.loggingValues[this.loggingValues.length - 1]);
@@ -342,5 +367,7 @@ export class Level extends Scene {
         this.bridgeParts = [];
         this.nextLvlButton = null;
         this.prevBridges = [];
+
+        this.isBonus = "standard";
     }
 }

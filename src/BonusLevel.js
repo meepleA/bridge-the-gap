@@ -13,8 +13,8 @@ export class BonusLevel extends Scene {
         // data from previous scene
         this.levelCount;
         this.totalLevelCount;
-        this.textStyle;
-
+        this.textStyle = { font: "20px Quicksand", fill: "#000000", align: "center", wordWrap: { width: 600, useAdvancedWrap: true }, lineSpacing: 20 };
+    
         // server, scenen manager
         this.allWordPairs = [];
         this.allSingleWords = [];
@@ -30,7 +30,6 @@ export class BonusLevel extends Scene {
     init(data) {
         this.levelCount = data.level[0];
         this.totalLevelCount = data.level[1];
-        this.textStyle = data.generalTextStyle;
     }
 
     preload() {
@@ -113,7 +112,7 @@ export class BonusLevel extends Scene {
         partialLengths.forEach(element => {
             totalBridgeLength += element * this.previewObj.bridgeWidth + this.previewObj.pillarWidth;
         });
-        if(totalBridgeLength <= 400 ){
+        if(totalBridgeLength <= this.cameras.main.width - 400 ){
             return false;
         }   
         console.log(partialLengths);
@@ -124,21 +123,22 @@ export class BonusLevel extends Scene {
 
     createBridge() {
 
+        let yPos = this.cameras.main.height - 300;
         let bridgeLengths = this.getBridgeLengths();
-        this.pillars[0] = new Pillar(this, 150, 300);
-        this.bridgeParts.push(new Bridge(this, 150 + this.previewObj.pillarWidth, 300, bridgeLengths[0]));
+        this.pillars[0] = new Pillar(this, 150, yPos);
+        this.bridgeParts.push(new Bridge(this, 150 + this.previewObj.pillarWidth, yPos, bridgeLengths[0]));
 
         for (let i = 1; i < bridgeLengths.length; i++) {
             let xPos = this.previewObj.pillarWidth + this.bridgeParts[i - 1].x + this.bridgeParts[i - 1].displayWidth;
-            this.bridgeParts.push(new Bridge(this, xPos, 300, bridgeLengths[i]));
+            this.bridgeParts.push(new Bridge(this, xPos, yPos, bridgeLengths[i]));
         }
 
         for (let i = 1; i < bridgeLengths.length + 1; i++) {
-            this.pillars.push(new Pillar(this, this.bridgeParts[i - 1].x + this.bridgeParts[i - 1].displayWidth, 300));
+            this.pillars.push(new Pillar(this, this.bridgeParts[i - 1].x + this.bridgeParts[i - 1].displayWidth, yPos));
         }
 
-        this.add.image(-11, 300, 'cliffL').setOrigin(0, 0);
-        this.add.image(this.pillars[this.pillars.length - 1].x - 8, 300, 'cliffR').setOrigin(0, 0);
+        this.add.image(-11, yPos, 'cliffL').setOrigin(0, 0);
+        this.add.image(this.pillars[this.pillars.length - 1].x - 8, yPos, 'cliffR').setOrigin(0, 0);
 
         console.log(this.getBridgeLengths().length);
     }
@@ -148,16 +148,15 @@ export class BonusLevel extends Scene {
         let rt = this.add.renderTexture(0, 0, this.cameras.main.width, this.cameras.main.height);
         rt.fill(0xffffff, 0.8);
 
-        let style = { font: "20px Quicksand", fill: "#000000", align: "center", wordWrap: { width: 600, useAdvancedWrap: true }, lineSpacing: 20 };
         let text = "Extra Level! \n \n Für dieses Level sind die Wörter bereits vorgegeben."
-        this.add.text(this.cameras.main.centerX, this.cameras.main.height / 3, text, style).setOrigin(0.5, 0.5);
+        this.add.text(this.cameras.main.centerX, this.cameras.main.height / 3, text, this.textStyle).setOrigin(0.5, 0.5);
 
         // stattdessen klick
         this.timedEventBonus = this.time.addEvent({ delay: 5000, callback: this.startLevel, callbackScope: this });
     }
 
     startLevel() {
-        this.scene.start("level", { generalTextStyle: this.textStyle, level: [this.levelCount, this.totalLevelCount], pairDist: this.allWordPairs, wordSet: this.set, pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
+        this.scene.start("level", { level: [this.levelCount, this.totalLevelCount], pairDist: this.allWordPairs, wordSet: this.set, pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
     }
 
     getRand(arr){
@@ -167,7 +166,8 @@ export class BonusLevel extends Scene {
     compileSet(){
         let mixed =[];
         while(this.set.length > 0){
-            mixed.push(new Word(this, 0, 0, this.getRand(this.set), {}, [[],[]]));
+            mixed.push(new Word(this, 0, 0, this.getRand(this.set), [[],[]]));
+            mixed[mixed.length-1].visible = false;
             console.log(mixed[mixed.length - 1].text);
             this.set.splice(this.set.indexOf(mixed[mixed.length - 1].text), 1);
         }

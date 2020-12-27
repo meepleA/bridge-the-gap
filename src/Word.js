@@ -1,9 +1,9 @@
-import { Scene } from "phaser";
+import { myGame } from "./globalVariables";
 
 export class Word extends Phaser.GameObjects.Text {
 
-    constructor(scenep, x, y, text, style, words) {
-        super(scenep, x, y, text, style);
+    constructor(scenep, x, y, text, words) {
+        super(scenep, x, y, text, myGame.textStyle);
         this.scene = scenep;
         this.originalX = x;
         this.originalY = y;
@@ -26,22 +26,31 @@ export class Word extends Phaser.GameObjects.Text {
     fillPartnerDist(twoDArray) {
         twoDArray.forEach(element => {
             if (element[0] == this.text) {
-                this.partnerDist.push([element[1], element[2]]);
+                this.partnerDist.push([element[1], element[2], element[3]]);
             }
             if (element[1] == this.text) {
-                this.partnerDist.push([element[0], element[2]]);
+                this.partnerDist.push([element[0], element[2], element[3]]);
             }
         });
     }
 
     getDist(word) {
-        for (var i = 0; i < this.partnerDist.length; i++) {
+        for (let i = 0; i < this.partnerDist.length; i++) {
             if (this.partnerDist[i][0] == word.text) {
-                var comparableDist = Math.round(parseFloat(this.partnerDist[i][1]));
+                let comparableDist = Math.round(parseFloat(this.partnerDist[i][1]));
                 return comparableDist;
             }
         }
         return this.defaultDist;
+    }
+
+    getDistVersion(word){
+        for (let i = 0; i < this.partnerDist.length; i++) {
+            if (this.partnerDist[i][0] == word.text) {
+                 return this.partnerDist[i][2];
+            }
+        }
+        return "0";
     }
 
     addDist(text, dist) {

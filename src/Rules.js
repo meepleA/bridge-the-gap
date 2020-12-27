@@ -1,18 +1,19 @@
 import { Scene } from "phaser";
 import { Button } from "./Button";
+import { myGame } from "./globalVariables";
 
 export class Rules extends Scene {
 
     constructor() {
         super({ key: "rules" });
-        this.introText = ["Hilf den Lemmingen über den Fluss!", "", "Baue ihnen eine Brücke, indem du benachbarte Pfeiler mit Wörtern füllst, dessen pragmatische Distanz dem Abstand zwischen den jeweiligen Pfeilern entspricht. \n", "\n", "Pragmatische Distanz? \n Zwei Wörter haben eine kürzere Distanz, je eher du die Objekte, die sie beschreiben, intuitiv zusammen benutzen würdest. Es gibt insgesamt 3 Abstufungen."];
-        this.prepText = ["Ablauf eines Levels: \n", "", "1. Eine Zeit begrenzte Vorschau zeigt dir die verschiedenen Abstände der Brückenpfeiler \n", "", "\n", "2. Stelle dir aus einem Pool von Wörtern ein Set zusammen, mit dem du die Brücke bauen möchtest"];
-        this.lvlText = ["3. Wähle ein Wort, dann einen Pfeiler, um es diesem zuzuordnen. Zugeordnete Wörter können durch erneutes anwählen wieder zurückgenommen werden. Eine Vorschau zeigt dir, welche Distanz benachbarte Wörter haben. Stimmt diese mit dem Abstand der Pfeiler überein, wird ein Brückenteil gelegt."];
+        this.introText = ["Hilf den Lemmingen über den Fluss!", "", "Baue ihnen eine Brücke, indem du benachbarte Pfeiler mit Wörtern füllst, deren pragmatische Distanz dem Abstand der Pfeiler entspricht. \n", "\n", "Pragmatische Distanz? \n Zwei Wörter haben eine kürzere Distanz, je eher du die Objekte, die sie beschreiben, intuitiv zusammen benutzen würdest. Es gibt insgesamt 3 Abstufungen."];
+        this.prepText = ["Ablauf eines Levels: \n", "", "1. Eine zeitlich begrenzte Vorschau zeigt dir die Abstände der Brückenpfeiler \n", "", "\n", "2. Stelle dir aus einem Pool von Wörtern ein Set zusammen, mit dem du die Brücke bauen möchtest."];
+        this.lvlText = ["3. Klicke auf ein Wort, dann auf einen Pfeiler, um es dort zu platzieren. Bereits platzierte Wörter können durch erneutes Anklicken wieder zurückgenommen werden. Zwischen benachbarten Wörtern wird ein Brückenteil gelegt. Entspricht die pragmatische Distanz dem Abstand der Pfeiler, können die Lemminge das Brückenteil überqueren."];
         this.currentScreen;
         this.intro;
         this.tutorial;
         this.lvlExpl;
-        this.textPos = [140, 95];
+        this.textPos = [340, 140];
 
         this.prevSnip;
         this.setSnip;
@@ -35,16 +36,16 @@ export class Rules extends Scene {
 
     create() {
         this.currentScreen = 0;
-        this.add.image(-30, -20, 'rulesBg').setScale(0.56, 0.69).setOrigin(0, 0);
+        this.add.image(-30, 0, 'rulesBg').setScale(myGame.bgPicScale[0], myGame.bgPicScale[1]).setOrigin(0, 0);
 
         let rt = this.add.renderTexture(0, 0, this.cameras.main.width, this.cameras.main.height);
         rt.fill(0xffffff, 0.5);
 
-        let textCenter = [this.cameras.main.width - (this.cameras.main.width - this.textPos[0]) / 2, this.cameras.main.height - (this.cameras.main.height - this.textPos[1]) / 2]
+        // let textCenter = [this.cameras.main.width - (this.cameras.main.width - this.textPos[0]) / 2, this.cameras.main.height - (this.cameras.main.height - this.textPos[1]) / 2]
         this.prevSnip = this.add.image(this.textPos[0], this.textPos[1] + 30, 'previewSnippet').setScale(0.3, 0.3).setOrigin(0, 0);
         this.setSnip = this.add.image(this.prevSnip.x, this.prevSnip.y + this.prevSnip.displayHeight + 30, 'setCompilationSnippet').setScale(0.3, 0.3).setOrigin(0, 0);
 
-        let style = { font: "20px Quicksand", fill: "#000000", wordWrap: { width: 600, useAdvancedWrap: true }, lineSpacing: 10 };
+        let style = myGame.textStyle;
         let narrowStyle = { font: "20px Quicksand", fill: "#000000", wordWrap: { width: 370, useAdvancedWrap: true }, lineSpacing: 10 };
         this.intro = this.add.text(this.textPos[0], this.textPos[1], this.introText, style).setOrigin(0, 0);
         this.tutorial = this.add.text(this.textPos[0] + this.prevSnip.displayWidth + 30, this.textPos[1], this.prepText, narrowStyle).setOrigin(0, 0);

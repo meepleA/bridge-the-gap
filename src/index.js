@@ -1,5 +1,8 @@
 import { config } from "./phaserConfig";
+import { initialisePlayerStorageKey } from "./PlayerStorageKey";
 
-var game = new Phaser.Game(config);
-
-
+// await initialisePlayerStorageKey();
+initialisePlayerStorageKey()
+    .then(() => {
+        new Phaser.Game(config);
+    })

@@ -2,6 +2,7 @@ import { Scene } from "phaser";
 import { PoolWord } from "./PoolWord";
 import { Button } from "./Button";
 import { WordSet } from "./WordSet";
+import { myGame } from "./globalVariables";
 
 export class SetCompilation extends Scene {
 
@@ -11,7 +12,7 @@ export class SetCompilation extends Scene {
         // data from previous scene
         this.levelCount;
         this.totalLevelCount;
-        this.textStyle;
+        this.textStyle = myGame.textStyle;
         this.pillars;
         this.bridgeParts;
 
@@ -29,7 +30,6 @@ export class SetCompilation extends Scene {
     init(data) {
         this.levelCount = data.level[0];
         this.totalLevelCount = data.level[1];
-        this.textStyle = data.generalTextStyle;
         this.pillars = data.pillarArr;
         this.bridgeParts = data.bridgePartArr;
     }
@@ -51,8 +51,8 @@ export class SetCompilation extends Scene {
         this.set = new WordSet(this);
         this.pool = [];
 
-        this.add.image(0, 0, 'setCompilationBg').setScale(0.55, 0.67).setOrigin(0, 0);
-        this.add.image(0, 0, 'setBg').setScale(0.45, 0.75).setOrigin(0, 0);
+        this.add.image(0, 0, 'setCompilationBg').setScale(myGame.bgPicScale[0], myGame.bgPicScale[1]).setOrigin(0, 0);
+        this.add.image(0, 0, 'setBg').setScale(0.8, 0.75).setOrigin(0, 0);
 
         this.lvlCountText = this.add.text(this.cameras.main.width - 100, 20, "Level: " + this.levelCount.toString(), this.textStyle);
         this.createButtons();
@@ -63,13 +63,13 @@ export class SetCompilation extends Scene {
     update() {
         // display the chosen word set
         if (this.set.length != 0) {
-            this.set.setWordPositions(50, 65, false, 400);
+            this.set.setWordPositions(50, 75, false, 480);
         }
     }
 
     createButtons() {
-        this.finishButton = new Button(this, this.cameras.main.width - 10, 200, "toBridgeButton", () => {
-            this.scene.start("level", { generalTextStyle: this.textStyle, level: [this.levelCount, this.totalLevelCount], pairDist: this.allWordPairs, wordSet: this.set.getSet(), pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
+        this.finishButton = new Button(this, this.cameras.main.width - 10, this.cameras.main.height/2, "toBridgeButton", () => {
+            this.scene.start("level", { level: [this.levelCount, this.totalLevelCount], pairDist: this.allWordPairs, wordSet: this.set.getSet(), pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
         }).setOrigin(1, 0);
         this.finishButton.visible = false;
         this.finishButton.setScale(0.5, 0.5);
@@ -86,9 +86,9 @@ export class SetCompilation extends Scene {
         this.poolWords = new WordSet(this);
         this.pool.forEach(element => {
             this.poolWords.bgPics.push(this.add.image(0, 0, "wordBg").setOrigin(0, 0));
-            this.poolWords.addWord(new PoolWord(this, 0, 0, this.textStyle, element));
+            this.poolWords.addWord(new PoolWord(this, 0, 0, element));
         });
-        this.poolWords.setWordPositions(20, 370, true, 100);
+        this.poolWords.setWordPositions(50, this.cameras.main.height - 200, true, 170);
     }
 
     selectWord(word) {
