@@ -1,0 +1,23 @@
+body {
+    font-family: "Malgun Gothic";
+    font-size: 18px;
+    width: 70%;
+    padding: 10%
+}
+
+h1, h2, #button {
+    text-align: center;
+}
+
+#button{
+    font-size: larger;
+    font-weight: bold;
+}
+
+#button a {
+    display: inline-block;
+    background-color: #FFA046;
+    width: 200px;
+    height: 60px;
+    line-height: 60px;
+}
