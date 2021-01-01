@@ -28,7 +28,7 @@ export class Level extends Scene {
         this.textStyle = myGame.textStyle;
         // TODO: server, scenen manager
         // strings
-        this.gameMode = "study";
+        this.gameMode = "studie";
         this.isBonus = "standard";
 
         this.playerWordSet;
@@ -310,9 +310,9 @@ export class Level extends Scene {
                 this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "initial", localStorage.getItem("playerStorageKey"), this.gameMode, this.isBonus, distVersion]);
 
             } else if (distance == wordDist) {
-                this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "correct", localStorage.getItem("playerStorageKey"), this.gameMode, this.isBonus, distVersion]);
+                this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "gleich", localStorage.getItem("playerStorageKey"), this.gameMode, this.isBonus, distVersion]);
             } else {
-                this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "wrong", localStorage.getItem("playerStorageKey"), this.gameMode, this.isBonus, distVersion]);
+                this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "anders", localStorage.getItem("playerStorageKey"), this.gameMode, this.isBonus, distVersion]);
             }
 
             console.log(this.loggingValues[this.loggingValues.length - 1]);
