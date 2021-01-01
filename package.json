@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "express": "^4.17.1",
+    "fast-csv": "^4.3.6",
     "phaser": "^3.24.1"
   }
 }
