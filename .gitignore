@@ -1,3 +1,5 @@
 node_modules
 dist
 webserver/startData
+webserver/data
+evaluationData.csv
