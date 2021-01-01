@@ -1,15 +1,16 @@
 {
   "wordpair": [
-    "Wäscheklammer",
+    "Toilettenpapier",
     "Bleistift"
   ],
   "annotation": [
     [
       "3",
-      "initial",
-      null,
-      null,
-      null
+      "0",
+      "0",
+      "vorstudie",
+      "0",
+      "0"
     ]
   ]
 }

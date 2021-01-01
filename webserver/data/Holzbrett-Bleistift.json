@@ -1,21 +1,15 @@
 {
   "wordpair": [
-    "Bleistift",
-    "Holzbrett"
+    "Holzbrett",
+    "Bleistift"
   ],
   "annotation": [
     [
-      "2",
-      "correct",
-      null,
-      null,
-      null
-    ],
-    [
-      "2",
+      "4",
       "0",
       "0",
       "vorstudie",
+      "0",
       "0"
     ]
   ]

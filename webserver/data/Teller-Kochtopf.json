@@ -1,15 +1,16 @@
 {
   "wordpair": [
-    "Klebeband",
+    "Teller",
     "Kochtopf"
   ],
   "annotation": [
     [
       "2",
-      "initial",
-      null,
-      null,
-      null
+      "0",
+      "0",
+      "vorstudie",
+      "0",
+      "0"
     ]
   ]
 }

@@ -1,28 +1,15 @@
 {
   "wordpair": [
-    "Papiertaschentuch",
-    "Bleistift"
+    "Bleistift",
+    "Papiertaschentuch"
   ],
   "annotation": [
     [
       "3",
-      "wrong",
-      null,
-      null,
-      null
-    ],
-    [
-      "2",
-      "correct",
-      null,
-      null,
-      null
-    ],
-    [
-      "2",
       "0",
       "0",
       "vorstudie",
+      "0",
       "0"
     ]
   ]
