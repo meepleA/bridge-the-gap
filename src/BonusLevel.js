@@ -63,7 +63,7 @@ export class BonusLevel extends Scene {
         this.createBridge();
         this.set = this.compileSet();
         // show level   
-        console.log(this.set);
+        // console.log(this.set);
         this.levelAnnouncement();
     }
 
@@ -153,12 +153,12 @@ export class BonusLevel extends Scene {
         this.add.image(-11, yPos, 'cliffL').setOrigin(0, 0);
         this.add.image(this.pillars[this.pillars.length - 1].x - 8, yPos, 'cliffR').setOrigin(0, 0);
 
-        console.log(this.getBridgeLengths().length);
-        console.log(this.set.length);
-        console.log(isNaN(this.pillars[this.pillars.length - 1].x));
+        // console.log(this.getBridgeLengths().length);
+        // console.log(this.set.length);
+        // console.log(isNaN(this.pillars[this.pillars.length - 1].x));
         if(isNaN(this.pillars[this.pillars.length - 1].x) 
         || this.set.length > this.getBridgeLengths().length + 1){
-            console.log("restart");
+            // console.log("restart");
             this.scene.restart();
         }
     }
@@ -188,7 +188,7 @@ export class BonusLevel extends Scene {
         while(this.set.length > 0){
             mixed.push(new Word(this, 0, 0, this.getRand(this.set), [[],[]]));
             mixed[mixed.length-1].visible = false;
-            console.log(mixed[mixed.length - 1].text);
+            // console.log(mixed[mixed.length - 1].text);
             this.set.splice(this.set.indexOf(mixed[mixed.length - 1].text), 1);
         }
         return mixed;
@@ -220,7 +220,7 @@ export class BonusLevel extends Scene {
                 this.allWordPairs = jsonObj.array;
             })
             .catch(function (error) {
-                console.log(error);
+                // console.log(error);
             });
     }
 }

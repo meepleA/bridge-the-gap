@@ -130,7 +130,7 @@ export class SetCompilation extends Scene {
         })
             .then(response => response.json())
             .then(jsonObj => {
-                console.log(jsonObj.array[0]);
+                // console.log(jsonObj.array[0]);
                 this.allWordPairs = jsonObj.array;
             })
             .catch(function (error) {

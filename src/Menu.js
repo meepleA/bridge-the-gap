@@ -19,7 +19,7 @@ export class Menu extends Scene {
         this.startButton = new Button(this, this.cameras.main.centerX + 50, this.cameras.main.centerY + 50, "startButton", () => {
             this.scene.start("rules");
         }).setOrigin(0.5, 0.5);
-        console.log(localStorage.getItem("playerStorageKey"));
+        // console.log(localStorage.getItem("playerStorageKey"));
     }
 
 

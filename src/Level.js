@@ -70,7 +70,7 @@ export class Level extends Scene {
 
     create() {
 
-        console.log(this.words);
+        // console.log(this.words);
         this.grounds = this.physics.add.group();
         let floor = this.physics.add.image(0, this.cameras.main.height - 75, 'floor').setScale(2, 1).setOrigin(0, 0);
         this.grounds.add(floor);
@@ -141,7 +141,7 @@ export class Level extends Scene {
                 let xPos = this.bridgeParts[i].x + this.bridgeParts[i].displayWidth/this.bridgeParts[i].dist * k;
                 let yPos = myGame.bridgeYPos + this.pillars[0].displayHeight - 30;
                 this.add.sprite(xPos, yPos, "stone", Math.floor(Math.random() * 3)).setScale(0.5, 0.5);
-                console.log("add stone");
+                // console.log("add stone");
             }
         }
 
@@ -164,7 +164,7 @@ export class Level extends Scene {
             })
             await this.sendResults(dataToBeSent);
 
-            console.log("start new level");
+            // console.log("start new level");
             this.resetVariables();
             this.levelCount++;
             this.totalLevelCount++;
@@ -291,7 +291,7 @@ export class Level extends Scene {
         let selecWordNoUmlaut = this.changeFromUmlaut(this.selectedWord.text);
         let otherWordNoUmlaut = this.changeFromUmlaut(otherWord.text);
 
-        console.log(wordDist);
+        // console.log(wordDist);
 
         for (const idx in this.loggingValues) {
             if (this.loggingValues[idx].includes(selecWordNoUmlaut) && this.loggingValues[idx].includes(otherWordNoUmlaut)) {
@@ -299,11 +299,11 @@ export class Level extends Scene {
             }
         }
 
-        console.log(this.totalLevelCount);
+        // console.log(this.totalLevelCount);
         if (isFirstLog) {
             if(this.totalLevelCount % 4 == 0){
                 this.isBonus = "bonus";
-                console.log("bonus!!")
+                // console.log("bonus!!")
             }
 
             if (wordDist == -1) {
@@ -318,7 +318,7 @@ export class Level extends Scene {
                 this.loggingValues.push([selecWordNoUmlaut, otherWordNoUmlaut, distToLog, "anders", localStorage.getItem("playerStorageKey"), this.gameMode, this.isBonus, distVersion]);
             }
 
-            console.log(this.loggingValues[this.loggingValues.length - 1]);
+            // console.log(this.loggingValues[this.loggingValues.length - 1]);
         }
     }
 
@@ -347,10 +347,10 @@ export class Level extends Scene {
         })
             .then(response => response.json())
             .then(jsonObj => {
-                console.log(jsonObj);
+                // console.log(jsonObj);
             })
             .catch(function (error) {
-                console.log(error);
+                // console.log(error);
             });
     }
 

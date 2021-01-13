@@ -14,7 +14,7 @@ export async function initialisePlayerStorageKey() {
         body: JSON.stringify({ test: "give ID" })
     })
         .then(response => response.json())
-        .then(readable => { console.log(readable); localStorage.setItem(playerStorageKey, readable); })
+        .then(readable => { localStorage.setItem(playerStorageKey, readable); })
         .catch(function (error) {
             console.log(error);
         }));

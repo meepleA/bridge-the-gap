@@ -65,7 +65,7 @@ export class Preview extends Scene {
         this.skipButton.setPosition(this.cameras.main.width - this.skipButton.displayWidth - 10, 100);
 
             this.countdown = this.add.text(this.cameras.main.centerX, 30, this.counter.toString(), this.textStyle);
-            this.timedEvent = this.time.addEvent({ delay: 1000, callback: () => { this.counter--; console.log }, callbackScope: this, loop: true });
+            this.timedEvent = this.time.addEvent({ delay: 1000, callback: () => { this.counter--; }, callbackScope: this, loop: true });
     }
 
     update() {
