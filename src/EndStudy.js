@@ -27,7 +27,7 @@ export class EndStudy extends Scene {
         let buttonPic = this.add.image(this.cameras.main.centerX, this.finishText.y + this.finishText.displayHeight + 50, 'buttonBg').setScale(0.8, 0.5).setOrigin(0.5, 0);
         this.finishButton = new Button(this, buttonPic.x, buttonPic.y +10, "finishButton", () => {
 
-            this.sys.game.destroy(true);
+            // this.sys.game.destroy(true);
             window.open("https://docs.google.com/forms/d/e/1FAIpQLSdy4Iav7mGQd0Y9iy5d3gN9jzm9pwcQGjNrKocmVPTdEU1N_Q/viewform?usp=sf_link", "_self");
 
         }).setOrigin(0.5, 0).setScale(0.6, 0.6);
