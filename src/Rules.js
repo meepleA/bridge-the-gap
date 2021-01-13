@@ -6,9 +6,9 @@ export class Rules extends Scene {
 
     constructor() {
         super({ key: "rules" });
-        this.introText = ["Hilf den Lemmingen über den Fluss!", "", "Baue ihnen eine Brücke, indem du benachbarte Pfeiler mit Wörtern füllst, deren pragmatische Distanz dem Abstand der Pfeiler entspricht. \n", "\n", "Pragmatische Distanz? \n Zwei Wörter haben eine kürzere Distanz, je eher du die Objekte, die sie beschreiben, intuitiv zusammen benutzen würdest. Es gibt insgesamt 3 Abstufungen."];
-        this.prepText = ["Ablauf eines Levels: \n", "", "1. Eine zeitlich begrenzte Vorschau zeigt dir die Abstände der Brückenpfeiler \n", "", "\n", "2. Stelle dir aus einem Pool von Wörtern ein Set zusammen, mit dem du die Brücke bauen möchtest."];
-        this.lvlText = ["3. Klicke auf ein Wort, dann auf einen Pfeiler, um es dort zu platzieren. Bereits platzierte Wörter können durch erneutes Anklicken wieder zurückgenommen werden. Zwischen benachbarten Wörtern wird ein Brückenteil gelegt. Entspricht die pragmatische Distanz dem Abstand der Pfeiler, können die Lemminge das Brückenteil überqueren."];
+        this.introText = ["Hilf den Lemmingen über den Fluss!", "", "Baue ihnen eine Brücke, indem du benachbarte Pfeiler mit Wörtern füllst, deren Distanz dem Abstand der Pfeiler entspricht. \n", "\n", "Distanz? \n Zwei Wörter haben eine kürzere Distanz, je eher du die Objekte, die sie beschreiben, intuitiv zusammen benutzen würdest. Es gibt insgesamt 6 Abstufungen."];
+        this.prepText = ["Ablauf eines Levels: \n", "", "1. Eine zeitlich begrenzte Vorschau zeigt dir die Abstände der Brückenpfeiler \n", "", "\n", "2. Stelle dir aus einer Menge von Wörtern eine Auswahl zusammen, mit der du die Brücke bauen möchtest."];
+        this.lvlText = ["3. Klicke auf ein Wort, dann auf einen Pfeiler, um es dort zu platzieren. Bereits platzierte Wörter können durch erneutes Anklicken wieder zurückgenommen werden. Zwischen benachbarten Wörtern wird ein Brückenteil gelegt. Entspricht die Distanz dem Abstand der Pfeiler, können die Lemminge das Brückenteil überqueren."];
         this.currentScreen;
         this.intro;
         this.tutorial;

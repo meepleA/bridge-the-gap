@@ -1,8 +1,8 @@
 Total Images: 3
-Individual Image Width: 240
-Individual Image Height: 52
-Individual Image Width with Padding: 240
-Individual Image Height with Padding: 52
+Individual Image Width: 254
+Individual Image Height: 53
+Individual Image Width with Padding: 254
+Individual Image Height with Padding: 53
 Images Across: 2
 Images Down : 2
 Top Padding: 0
