@@ -48,10 +48,13 @@ export class BonusLevel extends Scene {
 
         // this.setCompilationObj.hardCodeWordPairs(this.allWordPairs);
         await this.getWordPairs();
-        console.log(this.allWordPairs);
+       
+        for (let i = 0; i < this.allWordPairs.length; i++) {
+            this.allWordPairs[i][0] = this.setCompilationObj.changeToUmlaut(this.allWordPairs[i][0]);
+            this.allWordPairs[i][1] = this.setCompilationObj.changeToUmlaut(this.allWordPairs[i][1]);
+        }
 
         this.allSingleWords = this.setCompilationObj.getAllWithoutDoubles(this.allWordPairs);
-        console.log(this.allSingleWords);
         this.set = [];
 
         this.add.image(0, 0, 'background').setOrigin(0, 0);
@@ -61,13 +64,12 @@ export class BonusLevel extends Scene {
         this.set = this.compileSet();
         // show level   
         console.log(this.set);
-        console.log(this.previewObj.pillarWidth);
         this.levelAnnouncement();
     }
 
     calcPlayerSet(arr) {
 
-        if (!this.bridgeFull()) {
+        if (this.getCurrentBridgeLength() <= this.cameras.main.width - 400) {
 
             let failedCandidates = [];
             let candidates = [];
@@ -98,27 +100,38 @@ export class BonusLevel extends Scene {
                     i = numberOfCandidates;
                 }
             }
-            if (numberOfCandidates == failedCandidates.length) {
+            if (numberOfCandidates == failedCandidates.length
+                || this.getCurrentBridgeLength() > this.cameras.main.width - 200) { 
                 return false
             }
         } 
         return true;
     }
 
-    bridgeFull() {
+    // bridgeFull() {
         
+    //     let totalBridgeLength = this.previewObj.pillarWidth;
+    //     let partialLengths = this.getBridgeLengths();
+    //     partialLengths.forEach(element => {
+    //         totalBridgeLength += element * this.previewObj.bridgeWidth + this.previewObj.pillarWidth;
+    //     });
+    //     if(totalBridgeLength <= this.cameras.main.width - 400 ){
+    //         return false;
+    //     }   
+    //     console.log(partialLengths);
+    //     console.log(this.set.length);
+    //     console.log(totalBridgeLength);
+    //     return true;
+    // }
+
+    getCurrentBridgeLength(){
+
         let totalBridgeLength = this.previewObj.pillarWidth;
         let partialLengths = this.getBridgeLengths();
         partialLengths.forEach(element => {
             totalBridgeLength += element * this.previewObj.bridgeWidth + this.previewObj.pillarWidth;
         });
-        if(totalBridgeLength <= this.cameras.main.width - 400 ){
-            return false;
-        }   
-        console.log(partialLengths);
-        console.log(this.set.length);
-        console.log(totalBridgeLength);
-        return true;
+        return totalBridgeLength;
     }
 
     createBridge() {
@@ -141,6 +154,13 @@ export class BonusLevel extends Scene {
         this.add.image(this.pillars[this.pillars.length - 1].x - 8, yPos, 'cliffR').setOrigin(0, 0);
 
         console.log(this.getBridgeLengths().length);
+        console.log(this.set.length);
+        console.log(isNaN(this.pillars[this.pillars.length - 1].x));
+        if(isNaN(this.pillars[this.pillars.length - 1].x) 
+        || this.set.length > this.getBridgeLengths().length + 1){
+            console.log("restart");
+            this.scene.restart();
+        }
     }
 
     levelAnnouncement() {
@@ -152,7 +172,7 @@ export class BonusLevel extends Scene {
         this.add.text(this.cameras.main.centerX, this.cameras.main.height / 3, text, this.textStyle).setOrigin(0.5, 0.5);
 
         // stattdessen klick
-        this.timedEventBonus = this.time.addEvent({ delay: 5000, callback: this.startLevel, callbackScope: this });
+        this.timedEventBonus = this.time.addEvent({ delay: 4000, callback: this.startLevel, callbackScope: this });
     }
 
     startLevel() {
@@ -197,7 +217,6 @@ export class BonusLevel extends Scene {
         })
             .then(response => response.json())
             .then(jsonObj => {
-                // console.log(jsonObj.array[0]);
                 this.allWordPairs = jsonObj.array;
             })
             .catch(function (error) {
