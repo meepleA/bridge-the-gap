@@ -22,14 +22,15 @@ export class EndStudy extends Scene {
         rt.fill(0xffffff, 0.8);
 
         let style = { font: "20px Quicksand", fill: "#000000", align: "center", wordWrap: { width: 600, useAdvancedWrap: true }, lineSpacing: 20};
-        this.finishText = this.add.text(this.cameras.main.centerX, 100, "Vielen Dank für deine Teilnahme an der Studie. Der spielerische Teil ist beendet und ich bitte dich, als Letztes noch den Fragebogen zu deinen Erfahrungen mit dem Spiel auszufüllen. Bitte gib dort im Feld für deine Spieler-Id folgende Nummer ein: \n", "" + localStorage.getItem("playerStorageKey"), style).setOrigin(0.5, 0);;
+        this.finishText = this.add.text(this.cameras.main.centerX, 100, ["Vielen Dank für deine Teilnahme an der Studie. Der spielerische Teil ist beendet und ich bitte dich, als Letztes noch den Fragebogen zu deinen Erfahrungen mit dem Spiel auszufüllen. Bitte gib dort im Feld für deine Spieler-ID folgende Nummer ein: \n", "", localStorage.getItem("playerStorageKey")], style).setOrigin(0.5, 0);
        
         let buttonPic = this.add.image(this.cameras.main.centerX, this.finishText.y + this.finishText.displayHeight + 50, 'buttonBg').setScale(0.8, 0.5).setOrigin(0.5, 0);
         this.finishButton = new Button(this, buttonPic.x, buttonPic.y +10, "finishButton", () => {
 
-            // this.sys.game.destroy(true);
-            // window.open("https://docs.google.com/forms/d/e/1FAIpQLSdy4Iav7mGQd0Y9iy5d3gN9jzm9pwcQGjNrKocmVPTdEU1N_Q/viewform?usp=sf_link", "_self");
+            this.sys.game.destroy(true);
+            window.open("https://docs.google.com/forms/d/e/1FAIpQLSdy4Iav7mGQd0Y9iy5d3gN9jzm9pwcQGjNrKocmVPTdEU1N_Q/viewform?usp=sf_link", "_self");
 
-        }).setOrigin(0.5, 0).setScale(0.6, 0.6);;
+        }).setOrigin(0.5, 0).setScale(0.6, 0.6);
+
     }
 }
