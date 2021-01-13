@@ -63,7 +63,7 @@ export class Level extends Scene {
         this.load.image('wordBg', 'assets/wordBg.png');
         this.load.image('setBg', 'assets/setBg.png');
         this.load.spritesheet('lemming', 'assets/lemming.png', { frameWidth: 81, frameHeight: 82 });
-        this.load.spritesheet('otherLevelButton', 'assets/otherLevelButton.png', { frameWidth: 240, frameHeight: 52 });
+        this.load.spritesheet('otherLevelButton', 'assets/otherLevelButton.png', { frameWidth: 254, frameHeight: 53 });
         this.load.spritesheet('nextLevelButton', 'assets/nextLevelButton.png', { frameWidth: 270, frameHeight: 72 });
         this.load.spritesheet('stone', 'assets/stone.png', { frameWidth: 45, frameHeight: 36 });
     }
@@ -288,10 +288,13 @@ export class Level extends Scene {
         let distVersion = otherWord.getDistVersion(this.selectedWord);
         let distToLog = distance.toString();
         let isFirstLog = true;
+        let selecWordNoUmlaut = this.changeFromUmlaut(this.selectedWord.text);
+        let otherWordNoUmlaut = this.changeFromUmlaut(otherWord.text);
+
         console.log(wordDist);
 
         for (const idx in this.loggingValues) {
-            if (this.loggingValues[idx].includes(this.selectedWord.text) && this.loggingValues[idx].includes(otherWord.text)) {
+            if (this.loggingValues[idx].includes(selecWordNoUmlaut) && this.loggingValues[idx].includes(otherWordNoUmlaut)) {
                 isFirstLog = false;
             }
         }
@@ -307,12 +310,12 @@ export class Level extends Scene {
                 this.selectedWord.addDist(otherWord.text, distance);
                 otherWord.addDist(this.selectedWord.text, distance);
                 wordDist = distance;
-                this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "initial", localStorage.getItem("playerStorageKey"), this.gameMode, this.isBonus, distVersion]);
+                this.loggingValues.push([selecWordNoUmlaut, otherWordNoUmlaut, distToLog, "initial", localStorage.getItem("playerStorageKey"), this.gameMode, this.isBonus, distVersion]);
 
             } else if (distance == wordDist) {
-                this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "gleich", localStorage.getItem("playerStorageKey"), this.gameMode, this.isBonus, distVersion]);
+                this.loggingValues.push([selecWordNoUmlaut, otherWordNoUmlaut, distToLog, "gleich", localStorage.getItem("playerStorageKey"), this.gameMode, this.isBonus, distVersion]);
             } else {
-                this.loggingValues.push([this.selectedWord.text, otherWord.text, distToLog, "anders", localStorage.getItem("playerStorageKey"), this.gameMode, this.isBonus, distVersion]);
+                this.loggingValues.push([selecWordNoUmlaut, otherWordNoUmlaut, distToLog, "anders", localStorage.getItem("playerStorageKey"), this.gameMode, this.isBonus, distVersion]);
             }
 
             console.log(this.loggingValues[this.loggingValues.length - 1]);
@@ -349,6 +352,21 @@ export class Level extends Scene {
             .catch(function (error) {
                 console.log(error);
             });
+    }
+
+    changeFromUmlaut(umlautString) {
+        let newString = umlautString;
+            if (umlautString.includes("ä")) {
+                newString = umlautString.replace("ä", "ae");
+            }
+            if (umlautString.includes("ö")) {
+                newString = umlautString.replace("ö", "oe");
+            }
+            if (umlautString.includes("ü")) {
+                newString = umlautString.replace("ü", "ue");
+            }
+
+        return newString;
     }
 
     resetVariables() {

@@ -44,8 +44,13 @@ export class SetCompilation extends Scene {
     async create() {
         // server, scenen manager
         this.allWordPairs = [];
-        // this.hardCodeWordPairs(this.allWordPairs);
         const fetchPromise = await this.getWordPairs();
+
+        // this.allWordPairs changeTo Umlaut();
+        for (let i = 0; i < this.allWordPairs.length; i++) {
+            this.allWordPairs[i][0] = this.changeToUmlaut(this.allWordPairs[i][0]);
+            this.allWordPairs[i][1] = this.changeToUmlaut(this.allWordPairs[i][1]);
+        }
 
         this.allSingleWords = this.getAllWithoutDoubles(this.allWordPairs);
         this.set = new WordSet(this);
@@ -68,7 +73,7 @@ export class SetCompilation extends Scene {
     }
 
     createButtons() {
-        this.finishButton = new Button(this, this.cameras.main.width - 10, this.cameras.main.height/2, "toBridgeButton", () => {
+        this.finishButton = new Button(this, this.cameras.main.width - 10, this.cameras.main.height / 2, "toBridgeButton", () => {
             this.scene.start("level", { level: [this.levelCount, this.totalLevelCount], pairDist: this.allWordPairs, wordSet: this.set.getSet(), pillarArr: this.pillars, bridgePartArr: this.bridgeParts });
         }).setOrigin(1, 0);
         this.finishButton.visible = false;
@@ -114,35 +119,7 @@ export class SetCompilation extends Scene {
         }
     }
 
-    // server
-    hardCodeWordPairs(arr) {
-        // die ersten 20 Einträge vom Goldstandard
-        arr.push(["Kochtopf", "Tee", "1"]);
-        arr.push(["Geschirrtuch", "Tisch", "1"]);
-        arr.push(["Schere", "Papier", "1"]);
-        arr.push(["Tasse", "Topfdeckel", "2"]);
-        arr.push(["Kerze", "Feuerzeug", "1"]);
-        arr.push(["Lampe", "Kabel", "1"]);
-        arr.push(["Bleistift", "Papiertaschentuch", "2"]);
-        arr.push(["Plastikverpackung", "Klebeband", "1"]);
-        arr.push(["Schwamm", "Spülmittel", "1"]);
-        arr.push(["Korken", "Kugelschreiber", "3"]);
-        arr.push(["Holzbrett", "Bleistift", "2"]);
-        arr.push(["Spülmittel", "Gemüsemesser", "1"]);
-        arr.push(["Nadel", "Faden", "1"]);
-        arr.push(["Streichholz", "Schere", "3"]);
-        arr.push(["Kochlöffel", "Kochtopf", "1"]);
-        arr.push(["Glas", "Geschirrtuch", "1"]);
-        arr.push(["Papiertaschentuch", "Teller", "2"]);
-        arr.push(["Hemd", "Wäscheklammer", "1"]);
-        arr.push(["Weinflasche", "Korken", "1"]);
-        arr.push(["Hemd", "Bügeleisen", "1"]);
 
-        arr.push(["Tasse", "Tee", "1"]);
-        arr.push(["Faden", "Topfdeckel", "2"]);
-    }
-
-    // TODO: unterscheidung studie - free play
     getWordPairs() {
         return fetch("/wordPairs", {
             method: "POST",
@@ -159,6 +136,23 @@ export class SetCompilation extends Scene {
             .catch(function (error) {
                 console.log(error);
             });
+    }
+
+    changeToUmlaut(noUmlautString) {
+        let newString = noUmlautString;
+        if (noUmlautString != "Feuerzeug") {
+            if (noUmlautString.includes("ae")) {
+                newString = noUmlautString.replace("ae", "ä");
+            }
+            if (noUmlautString.includes("oe")) {
+                newString = noUmlautString.replace("oe", "ö");
+            }
+            if (noUmlautString.includes("ue")) {
+                newString = noUmlautString.replace("ue", "ü");
+            }
+        }
+
+        return newString;
     }
 
     getAllWithoutDoubles(twoDArray) {
