@@ -64,7 +64,7 @@ server.post("/wordPairs", (req, res) => {
 
 server.post("/levelResult", (req, res) => {
     // req.body = [{ wordpair: [word1, word2], annotation: [distance, error, playerID, mode, bonus, distVersion] }, {}, ...]
-    // save json files, TODO: ip checken auf vorhandene einträge
+    // save json files
 
     let ws = fs.createWriteStream(__dirname + "/evaluationData.csv");
     console.log(req.body)
@@ -78,8 +78,6 @@ server.post("/levelResult", (req, res) => {
         let serverFilename;
         let isNewEntry = true;
         
-        // if(fs.existsSync(path)){}
-        
         readFiles(__dirname + "/data/", function (filename, fileContent) {
             if (filename == receivedFilename[0] || filename == receivedFilename[1]) {
                 fileContent.annotation.forEach(annotElem => {
@@ -92,10 +90,14 @@ server.post("/levelResult", (req, res) => {
                     }
                 });
             }
+            console.log("complete data:  "  + annotationData);
 
             fileContent.annotation.forEach(elem => {
-                let csvEntry = elem;
-                csvEntry.unshift(filename.split(".")[0]);
+                let csvEntry = [];
+                for (const val in elem) {
+                    csvEntry.push(val);
+                }
+                csvEntry.unshift(fileContent.wordpair[0] + "-" + fileContent.wordpair[1]);
                 csvData.push(csvEntry);
             });
         });
@@ -103,6 +105,7 @@ server.post("/levelResult", (req, res) => {
         if (isNewEntry) {
             let csvNewEntry = elem.annotation;
             let wordpairToAdd;
+            
             let jsonData = JSON.stringify({ wordpair: elem.wordpair, annotation: annotationData }, null, 2);
 
             if (serverFilename != null) {

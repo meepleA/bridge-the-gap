@@ -63,6 +63,8 @@ export class SetCompilation extends Scene {
         this.createButtons();
         this.createPool();
 
+        // console.log(this.allWordPairs);
+
     }
 
     update() {
