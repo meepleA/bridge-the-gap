@@ -95,7 +95,7 @@ export class SetCompilation extends Scene {
             this.poolWords.bgPics.push(this.add.image(0, 0, "wordBg").setOrigin(0, 0));
             this.poolWords.addWord(new PoolWord(this, 0, 0, element));
         });
-        this.poolWords.setWordPositions(50, this.cameras.main.height - 200, true, 170);
+        this.poolWords.setWordPositions(50, this.cameras.main.height - 220, true, 170);
     }
 
     selectWord(word) {

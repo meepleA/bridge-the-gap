@@ -21,7 +21,7 @@ export class EndStudy extends Scene {
         let rt = this.add.renderTexture(0, 0, this.cameras.main.width, this.cameras.main.height);
         rt.fill(0xffffff, 0.8);
 
-        let style = { font: "20px Quicksand", fill: "#000000", align: "center", wordWrap: { width: 600, useAdvancedWrap: true }, lineSpacing: 20};
+        let style = { fontSize: 24, fontFamily: "Quicksand, Arial", fill: "#000000", align: "center", wordWrap: { width: 700, useAdvancedWrap: true }, lineSpacing: 20};
         this.finishText = this.add.text(this.cameras.main.centerX, 100, ["Vielen Dank für deine Teilnahme an der Studie. Der spielerische Teil ist beendet und ich bitte dich, als Letztes noch den Fragebogen zu deinen Erfahrungen mit dem Spiel auszufüllen. Bitte gib dort im Feld für deine Spieler-ID folgende Nummer ein: \n", "", localStorage.getItem("playerStorageKey")], style).setOrigin(0.5, 0);
        
         let buttonPic = this.add.image(this.cameras.main.centerX, this.finishText.y + this.finishText.displayHeight + 50, 'buttonBg').setScale(0.8, 0.5).setOrigin(0.5, 0);

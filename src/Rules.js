@@ -13,7 +13,7 @@ export class Rules extends Scene {
         this.intro;
         this.tutorial;
         this.lvlExpl;
-        this.textPos = [340, 140];
+        this.textPos = [250, 140];
 
         this.prevSnip;
         this.setSnip;
@@ -45,10 +45,10 @@ export class Rules extends Scene {
         this.prevSnip = this.add.image(this.textPos[0], this.textPos[1] + 30, 'previewSnippet').setScale(0.3, 0.3).setOrigin(0, 0);
         this.setSnip = this.add.image(this.prevSnip.x, this.prevSnip.y + this.prevSnip.displayHeight + 30, 'setCompilationSnippet').setScale(0.3, 0.3).setOrigin(0, 0);
 
-        let style = myGame.textStyle;
-        let narrowStyle = { font: "20px Quicksand", fill: "#000000", wordWrap: { width: 370, useAdvancedWrap: true }, lineSpacing: 10 };
+        let style = { fontSize: 24, fontFamily: "Quicksand, Arial", fill: "#000000", wordWrap: { width: 700, useAdvancedWrap: true }, lineSpacing: 10 };
+        let narrowStyle = { fontSize: 24, fontFamily: "Quicksand, Arial", fill: "#000000", wordWrap: { width: 420, useAdvancedWrap: true }, lineSpacing: 10 };
         this.intro = this.add.text(this.textPos[0], this.textPos[1], this.introText, style).setOrigin(0, 0);
-        this.tutorial = this.add.text(this.textPos[0] + this.prevSnip.displayWidth + 30, this.textPos[1], this.prepText, narrowStyle).setOrigin(0, 0);
+        this.tutorial = this.add.text(this.textPos[0] + this.prevSnip.displayWidth + 80, this.textPos[1], this.prepText, narrowStyle).setOrigin(0, 0);
         this.lvlExpl = this.add.text(this.textPos[0], this.textPos[1], this.lvlText, style).setOrigin(0, 0);
 
         this.lvlSnip = this.add.image(this.cameras.main.width / 2, this.lvlExpl.y + this.lvlExpl.displayHeight + 30, 'levelSnippet').setScale(0.35, 0.35).setOrigin(0.5, 0);

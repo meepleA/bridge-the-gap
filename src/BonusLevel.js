@@ -13,7 +13,7 @@ export class BonusLevel extends Scene {
         // data from previous scene
         this.levelCount;
         this.totalLevelCount;
-        this.textStyle = { font: "20px Quicksand", fill: "#000000", align: "center", wordWrap: { width: 600, useAdvancedWrap: true }, lineSpacing: 20 };
+        this.textStyle = { fontSize: 24, fontFamily: "Quicksand, Arial", fill: "#000000", align: "center", wordWrap: { width: 700, useAdvancedWrap: true }, lineSpacing: 20 };
     
         // server, scenen manager
         this.allWordPairs = [];
