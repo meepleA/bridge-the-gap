@@ -136,9 +136,9 @@ export class Level extends Scene {
         });
 
         // add dist stones
-        for(let i = 0; i < this.bridgeParts.length; i++){
-            for(let k = 1; k < this.bridgeParts[i].dist; k++){
-                let xPos = this.bridgeParts[i].x + this.bridgeParts[i].displayWidth/this.bridgeParts[i].dist * k;
+        for (let i = 0; i < this.bridgeParts.length; i++) {
+            for (let k = 1; k < this.bridgeParts[i].dist; k++) {
+                let xPos = this.bridgeParts[i].x + this.bridgeParts[i].displayWidth / this.bridgeParts[i].dist * k;
                 let yPos = myGame.bridgeYPos + this.pillars[0].displayHeight - 30;
                 this.add.sprite(xPos, yPos, "stone", Math.floor(Math.random() * 3)).setScale(0.5, 0.5);
                 // console.log("add stone");
@@ -200,7 +200,7 @@ export class Level extends Scene {
                 this.scene.start('endStudy');
             } else if (this.totalLevelCount % 4 == 0) {
                 this.scene.start('bonusLevel', { level: [this.levelCount, this.totalLevelCount] });
-            }else {
+            } else {
                 this.scene.start('preview', { level: [this.levelCount, this.totalLevelCount] });
             }
 
@@ -301,18 +301,20 @@ export class Level extends Scene {
 
         // console.log(this.totalLevelCount);
         if (isFirstLog) {
-            if(this.totalLevelCount % 4 == 0){
+            if (this.totalLevelCount % 4 == 0) {
                 this.isBonus = "bonus";
                 // console.log("bonus!!")
             }
 
-            if (wordDist == -1) {
+            if (wordDist[0] == -1) {
+                // wordDist = distance;
                 this.selectedWord.addDist(otherWord.text, distance);
                 otherWord.addDist(this.selectedWord.text, distance);
-                wordDist = distance;
                 this.loggingValues.push([selecWordNoUmlaut, otherWordNoUmlaut, distToLog, "initial", localStorage.getItem("playerStorageKey"), this.gameMode, this.isBonus, distVersion]);
 
-            } else if (distance == wordDist) {
+            } else if (distance == wordDist[0] || distance == wordDist[1]) {
+                this.selectedWord.addDist(otherWord.text, distance);
+                otherWord.addDist(this.selectedWord.text, distance);
                 this.loggingValues.push([selecWordNoUmlaut, otherWordNoUmlaut, distToLog, "gleich", localStorage.getItem("playerStorageKey"), this.gameMode, this.isBonus, distVersion]);
             } else {
                 this.loggingValues.push([selecWordNoUmlaut, otherWordNoUmlaut, distToLog, "anders", localStorage.getItem("playerStorageKey"), this.gameMode, this.isBonus, distVersion]);
@@ -320,6 +322,7 @@ export class Level extends Scene {
 
             // console.log(this.loggingValues[this.loggingValues.length - 1]);
         }
+        // console.log(wordDist + "   " + distance);
     }
 
     checkWin() {
@@ -356,15 +359,15 @@ export class Level extends Scene {
 
     changeFromUmlaut(umlautString) {
         let newString = umlautString;
-            if (umlautString.includes("ä")) {
-                newString = umlautString.replace("ä", "ae");
-            }
-            if (umlautString.includes("ö")) {
-                newString = umlautString.replace("ö", "oe");
-            }
-            if (umlautString.includes("ü")) {
-                newString = umlautString.replace("ü", "ue");
-            }
+        if (umlautString.includes("ä")) {
+            newString = umlautString.replace("ä", "ae");
+        }
+        if (umlautString.includes("ö")) {
+            newString = umlautString.replace("ö", "oe");
+        }
+        if (umlautString.includes("ü")) {
+            newString = umlautString.replace("ü", "ue");
+        }
 
         return newString;
     }

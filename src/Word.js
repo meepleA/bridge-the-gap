@@ -15,14 +15,14 @@ export class Word extends Phaser.GameObjects.Text {
         this.on('pointerover', () => { this.setColor("RED"); });
         this.on('pointerout', () => { this.setColor("BLACK"); });
 
-        this.defaultDist = -1;
+        this.defaultDist = [-1, -1];
         this.partnerDist = [];
         this.fillPartnerDist(words);
         this.isHighlighted = false;
         this.enteredPillar;
     }
 
-    // später auf server, hier anfrage
+
     fillPartnerDist(twoDArray) {
         twoDArray.forEach(element => {
             if (element[0] == this.text) {
@@ -37,8 +37,8 @@ export class Word extends Phaser.GameObjects.Text {
     getDist(word) {
         for (let i = 0; i < this.partnerDist.length; i++) {
             if (this.partnerDist[i][0] == word.text) {
-                let comparableDist = Math.round(parseFloat(this.partnerDist[i][1]));
-                return comparableDist;
+                // console.log(this.partnerDist[i]);
+                return [Math.floor(parseFloat(this.partnerDist[i][1])), Math.ceil(parseFloat(this.partnerDist[i][1]))];
             }
         }
         return this.defaultDist;
@@ -54,7 +54,18 @@ export class Word extends Phaser.GameObjects.Text {
     }
 
     addDist(text, dist) {
-        this.partnerDist.push([text, dist]);
+        
+        let c = 0;
+        for (let i = 0; i < this.partnerDist.length; i++) {
+            if (this.partnerDist[i][0] == text) {
+               this.partnerDist[i][1] = dist;
+               c++;
+            }
+        }
+        
+        if(c == 0){
+            this.partnerDist.push([text, dist]);
+        }
     }
 
     setOriginals(x, y) {

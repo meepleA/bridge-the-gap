@@ -24,17 +24,23 @@ export class PreviewBridge extends Phaser.GameObjects.Image {
             return false;
         }
 
-        if (actualDist == -1 && this.prevBridgeWidth >= this.bridge.displayWidth) {
+        if (actualDist[0] == -1 && this.prevBridgeWidth >= this.bridge.displayWidth) {
 
+            // console.log("neu");
             this.bridge.makeVisible(true);
             return false;
 
-        } else if (this.prevBridgeWidth >= this.standardBridgeSize * actualDist) {
+        } else if (this.prevBridgeWidth >= this.standardBridgeSize * actualDist[0]
+            && (this.bridge.dist == actualDist[0] || this.bridge.dist == actualDist[1])) {
 
-            if (this.bridge.dist == actualDist) {
+            // if (this.bridge.dist == actualDist[0] || this.bridge.dist == actualDist[1]) {
                 this.bridge.makeVisible(true);
+                // console.log("passt");
+                // console.log(actualDist);
                 return false;
-            }
+            // }
+
+        } else if(this.prevBridgeWidth >= this.standardBridgeSize * actualDist[1]){
 
         } else {
 
