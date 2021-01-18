@@ -115,7 +115,7 @@ export class Preview extends Scene {
         }
 
         this.add.image(-11, this.bridgeConstructYPos, 'cliffL').setOrigin(0, 0);
-        this.add.image(this.pillars[this.pillars.length - 1].x - 8, this.bridgeConstructYPos, 'cliffR').setOrigin(0, 0);
+        this.add.image(this.pillars[this.pillars.length - 1].x + 8, this.bridgeConstructYPos, 'cliffR').setOrigin(0, 0);
 
     }
 }

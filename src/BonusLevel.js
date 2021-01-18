@@ -151,7 +151,7 @@ export class BonusLevel extends Scene {
         }
 
         this.add.image(-11, yPos, 'cliffL').setOrigin(0, 0);
-        this.add.image(this.pillars[this.pillars.length - 1].x - 8, yPos, 'cliffR').setOrigin(0, 0);
+        this.add.image(this.pillars[this.pillars.length - 1].x + 8, yPos, 'cliffR').setOrigin(0, 0);
 
         // console.log(this.getBridgeLengths().length);
         // console.log(this.set.length);
