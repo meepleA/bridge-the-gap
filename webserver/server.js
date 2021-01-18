@@ -54,7 +54,7 @@ server.post("/wordPairs", (req, res) => {
             average += parseFloat(element[0]);
         });
         average = average / fileContent.annotation.length;
-        console.log(filename + " : " + average);
+        // console.log(filename + " : " + average);
         allWordPairs.push([fileContent.wordpair[0], fileContent.wordpair[1], average, fileContent.annotation.length]);
     });
 
@@ -66,7 +66,10 @@ server.post("/levelResult", (req, res) => {
     // req.body = [{ wordpair: [word1, word2], annotation: [distance, error, playerID, mode, bonus, distVersion] }, {}, ...]
     // save json files
 
-    let ws = fs.createWriteStream(__dirname + "/evaluationData.csv");
+    let ws;
+    if (req.body.length > 0) {
+        ws = fs.createWriteStream(__dirname + "/evaluationData.csv");
+    }
     console.log(req.body)
 
     let csvData = [["Wortpaar", "zugeteilte Distanz", "Verglichen mit gegebener Distanz", "Spieler ID", "Spielmodus", "Art des Levels", "Version der gegebenen Distanz"]];
@@ -77,7 +80,7 @@ server.post("/levelResult", (req, res) => {
         let annotationData = [elem.annotation];
         let serverFilename;
         let isNewEntry = true;
-        
+
         readFiles(__dirname + "/data/", function (filename, fileContent) {
             if (filename == receivedFilename[0] || filename == receivedFilename[1]) {
                 fileContent.annotation.forEach(annotElem => {
@@ -90,22 +93,24 @@ server.post("/levelResult", (req, res) => {
                     }
                 });
             }
-            console.log("complete data:  "  + annotationData);
+            // console.log("complete data:  "  + annotationData);
 
             fileContent.annotation.forEach(elem => {
                 let csvEntry = [];
-                for (const val in elem) {
+                elem.forEach(val => {
                     csvEntry.push(val);
-                }
+                });
+
                 csvEntry.unshift(fileContent.wordpair[0] + "-" + fileContent.wordpair[1]);
                 csvData.push(csvEntry);
             });
         });
 
+
         if (isNewEntry) {
             let csvNewEntry = elem.annotation;
             let wordpairToAdd;
-            
+
             let jsonData = JSON.stringify({ wordpair: elem.wordpair, annotation: annotationData }, null, 2);
 
             if (serverFilename != null) {
@@ -116,11 +121,14 @@ server.post("/levelResult", (req, res) => {
                 wordpairToAdd = receivedFilename[0].split(".")[0];
             }
 
-                csvNewEntry.unshift(wordpairToAdd);
-                csvData.push(csvNewEntry);      
+            csvNewEntry.unshift(wordpairToAdd);
+            csvData.push(csvNewEntry);
         }
     }
-    csv.write(csvData, { headers: true }).pipe(ws);
+
+    if (req.body.length > 0) {
+        csv.write(csvData, { headers: true }).pipe(ws);
+    }
 
     res.json({ finished: "oh yeah" });
 });
