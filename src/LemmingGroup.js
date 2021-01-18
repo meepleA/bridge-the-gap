@@ -36,15 +36,20 @@ export class LemmingGroup {
 
     animate(newGroup){
         this.myGroup.children.each( (child) => {
+            if(child.body.position.x > this.myScene.cameras.main.width + child.displayWidth){
+                child.body.setGravityY(0);
+                child.setVelocityX(0);
 
-            if(child.body.position.y >= this.myScene.cameras.main.height - 300 && child.body.touching.down){
+            } else if(child.body.position.y >= this.myScene.cameras.main.height - 300 && child.body.touching.down){
                 // change group
                 child.body.setGravityY(0);
                 child.setVelocityX(-50);
                 newGroup.add(child);
                 this.myGroup.remove(child);
+
             } else if(child.body.position.y >= this.myScene.cameras.main.height - 300 && child.body.position.y <= this.myScene.cameras.main.height - 75){
                 child.anims.play("fall", true);
+
             } else {
                 child.anims.play("run", true);
                 child.setVelocityX(110);
