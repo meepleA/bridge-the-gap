@@ -128,7 +128,7 @@ export class Level extends Scene {
         // other ground
         this.grounds.create(-165, this.cameras.main.height - 300, 'cliffL').setOrigin(0, 0);
         this.grounds.create(-11, this.cameras.main.height - 300, 'cliffL').setOrigin(0, 0);
-        this.grounds.create(this.pillars[this.pillars.length - 1].x - 8, this.cameras.main.height - 300, 'cliffR').setOrigin(0, 0);
+        this.grounds.create(this.pillars[this.pillars.length - 1].x + 8, this.cameras.main.height - 300, 'cliffR').setOrigin(0, 0);
 
         this.grounds.children.iterate(function (child) {
             child.body.allowGravity = false;
@@ -158,12 +158,14 @@ export class Level extends Scene {
 
         this.nextLvlButton = new Button(this, this.cameras.main.width - 40, 160, "nextLevelButton", async () => {
 
+            this.scene.pause();
             // all data is sent as array of json objs in a single request -> server has to parse full list!
             const dataToBeSent = this.loggingValues.map(element => {
-                return { wordpair: element.splice(0, 2), annotation: element }
+                return { wordpair: [element[0], element[1]], annotation: [element[2], element[3], element[4], element[5], element[6], element[7]] }
             })
             await this.sendResults(dataToBeSent);
 
+            // console.log(dataToBeSent);
             // console.log("start new level");
             this.resetVariables();
             this.levelCount++;
@@ -186,9 +188,11 @@ export class Level extends Scene {
 
         this.otherLevelButton = new Button(this, this.cameras.main.width - 50, 110, "otherLevelButton", async () => {
 
+            this.scene.pause();
+            // console.log(this.loggingValues);
             // all data is sent as array of json objs in a single request -> server has to parse full list!
             const dataToBeSent = this.loggingValues.map(element => {
-                return { wordpair: element.splice(0, 2), annotation: element }
+                return { wordpair: [element[0], element[1]], annotation: [element[2], element[3], element[4], element[5], element[6], element[7]] }
             })
             await this.sendResults(dataToBeSent);
 
@@ -200,6 +204,7 @@ export class Level extends Scene {
                 this.scene.start('endStudy');
             } else if (this.totalLevelCount % 4 == 0) {
                 this.scene.start('bonusLevel', { level: [this.levelCount, this.totalLevelCount] });
+                // console.log("restart");
             } else {
                 this.scene.start('preview', { level: [this.levelCount, this.totalLevelCount] });
             }
@@ -320,9 +325,10 @@ export class Level extends Scene {
                 this.loggingValues.push([selecWordNoUmlaut, otherWordNoUmlaut, distToLog, "anders", localStorage.getItem("playerStorageKey"), this.gameMode, this.isBonus, distVersion]);
             }
 
-            // console.log(this.loggingValues[this.loggingValues.length - 1]);
+            
         }
         // console.log(wordDist + "   " + distance);
+        // console.log(this.loggingValues[this.loggingValues.length - 1]);
     }
 
     checkWin() {

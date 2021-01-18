@@ -3,3 +3,4 @@ dist
 webserver/startData
 webserver/data
 evaluationData.csv
+corruptData
