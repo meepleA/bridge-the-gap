@@ -1,4 +1,4 @@
-# BA-game
+# bridge-the-gap
 
 Im Folgenden sind die relevanten Verzeichnisse und Dateien aufgeschlüsselt.
 
