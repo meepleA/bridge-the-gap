@@ -5,7 +5,7 @@ Im Folgenden sind die relevanten Verzeichnisse und Dateien aufgeschlüsselt.
 Verzeichnisse:
 - *assets*: Die Grafiken für das Spiel
 - *src*: Der Programmcode für den Client zum Spiel
-- *werbserver/data*: Die Bewertungen von Wortpaaren, die durch die Teilnehmer der Studie beim Spielen erstellt wurden, mit jeweils einer Datei pro Wortpaar 
+- *webserver/data*: Die Bewertungen von Wortpaaren, die durch die Teilnehmer der Studie beim Spielen erstellt wurden, mit jeweils einer Datei pro Wortpaar 
 
 Dateien:
 - *index.html*: Hinweise zu der Studie
