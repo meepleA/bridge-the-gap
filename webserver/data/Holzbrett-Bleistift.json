@@ -1,9 +1,17 @@
 {
   "wordpair": [
-    "Holzbrett",
-    "Bleistift"
+    "Bleistift",
+    "Holzbrett"
   ],
   "annotation": [
+    [
+      "5",
+      "anders",
+      "643",
+      "studie",
+      "standard",
+      1
+    ],
     [
       "4",
       "0",

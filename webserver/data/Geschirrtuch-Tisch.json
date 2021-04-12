@@ -1,9 +1,57 @@
 {
   "wordpair": [
-    "Geschirrtuch",
-    "Tisch"
+    "Tisch",
+    "Geschirrtuch"
   ],
   "annotation": [
+    [
+      "1",
+      "gleich",
+      "738",
+      "studie",
+      "standard",
+      6
+    ],
+    [
+      "1",
+      "anders",
+      "261",
+      "studie",
+      "standard",
+      5
+    ],
+    [
+      "2",
+      "gleich",
+      "710",
+      "studie",
+      "bonus",
+      4
+    ],
+    [
+      "5",
+      "anders",
+      "663",
+      "studie",
+      "standard",
+      3
+    ],
+    [
+      "1",
+      "gleich",
+      "202",
+      "studie",
+      "standard",
+      2
+    ],
+    [
+      "1",
+      "gleich",
+      "154",
+      "studie",
+      "bonus",
+      1
+    ],
     [
       "1",
       "0",

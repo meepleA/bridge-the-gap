@@ -1,9 +1,41 @@
 {
   "wordpair": [
-    "Geschirrtuch",
-    "Nadel"
+    "Nadel",
+    "Geschirrtuch"
   ],
   "annotation": [
+    [
+      "3",
+      "anders",
+      "704",
+      "studie",
+      "standard",
+      4
+    ],
+    [
+      "4",
+      "gleich",
+      "825",
+      "studie",
+      "standard",
+      3
+    ],
+    [
+      "3",
+      "anders",
+      "1028",
+      "studie",
+      "standard",
+      2
+    ],
+    [
+      "6",
+      "anders",
+      "164",
+      "studie",
+      "standard",
+      1
+    ],
     [
       "3",
       "0",

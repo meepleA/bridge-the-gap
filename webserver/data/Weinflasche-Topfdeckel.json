@@ -1,9 +1,41 @@
 {
   "wordpair": [
-    "Weinflasche",
-    "Topfdeckel"
+    "Topfdeckel",
+    "Weinflasche"
   ],
   "annotation": [
+    [
+      "5",
+      "gleich",
+      "564",
+      "studie",
+      "standard",
+      4
+    ],
+    [
+      "4",
+      "gleich",
+      "738",
+      "studie",
+      "bonus",
+      3
+    ],
+    [
+      "3",
+      "anders",
+      "480",
+      "studie",
+      "standard",
+      2
+    ],
+    [
+      "5",
+      "gleich",
+      "825",
+      "studie",
+      "bonus",
+      1
+    ],
     [
       "5",
       "0",

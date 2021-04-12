@@ -1,9 +1,57 @@
 {
   "wordpair": [
-    "Streichholz",
-    "Schere"
+    "Schere",
+    "Streichholz"
   ],
   "annotation": [
+    [
+      "2",
+      "anders",
+      "416",
+      "studie",
+      "bonus",
+      6
+    ],
+    [
+      "5",
+      "gleich",
+      "801",
+      "studie",
+      "standard",
+      5
+    ],
+    [
+      "4",
+      "gleich",
+      "710",
+      "studie",
+      "bonus",
+      4
+    ],
+    [
+      "3",
+      "anders",
+      "395",
+      "studie",
+      "bonus",
+      3
+    ],
+    [
+      "3",
+      "anders",
+      "154",
+      "studie",
+      "standard",
+      2
+    ],
+    [
+      "5",
+      "anders",
+      "712",
+      "studie",
+      "bonus",
+      1
+    ],
     [
       "6",
       "0",

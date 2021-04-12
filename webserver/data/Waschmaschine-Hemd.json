@@ -1,9 +1,49 @@
 {
   "wordpair": [
-    "Waschmaschine",
-    "Hemd"
+    "Hemd",
+    "Waschmaschine"
   ],
   "annotation": [
+    [
+      "1",
+      "anders",
+      "865",
+      "studie",
+      "standard",
+      5
+    ],
+    [
+      "1",
+      "anders",
+      "261",
+      "studie",
+      "standard",
+      4
+    ],
+    [
+      "1",
+      "anders",
+      "652",
+      "studie",
+      "standard",
+      3
+    ],
+    [
+      "5",
+      "anders",
+      "825",
+      "studie",
+      "standard",
+      2
+    ],
+    [
+      "3",
+      "anders",
+      "1022",
+      "studie",
+      "standard",
+      1
+    ],
     [
       "1",
       "0",

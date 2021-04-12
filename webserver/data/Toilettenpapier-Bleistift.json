@@ -1,9 +1,33 @@
 {
   "wordpair": [
-    "Toilettenpapier",
-    "Bleistift"
+    "Bleistift",
+    "Toilettenpapier"
   ],
   "annotation": [
+    [
+      "3",
+      "gleich",
+      "672",
+      "studie",
+      "bonus",
+      3
+    ],
+    [
+      "3",
+      "gleich",
+      "825",
+      "studie",
+      "bonus",
+      2
+    ],
+    [
+      "3",
+      "gleich",
+      "682",
+      "studie",
+      "standard",
+      1
+    ],
     [
       "3",
       "0",

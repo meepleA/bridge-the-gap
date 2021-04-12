@@ -1,9 +1,41 @@
 {
   "wordpair": [
-    "Tee",
-    "Kerze"
+    "Kerze",
+    "Tee"
   ],
   "annotation": [
+    [
+      "4",
+      "anders",
+      "663",
+      "studie",
+      "standard",
+      4
+    ],
+    [
+      "1",
+      "gleich",
+      "629",
+      "studie",
+      "standard",
+      3
+    ],
+    [
+      "2",
+      "gleich",
+      "933",
+      "studie",
+      "bonus",
+      2
+    ],
+    [
+      "2",
+      "anders",
+      "682",
+      "studie",
+      "standard",
+      1
+    ],
     [
       "1",
       "0",

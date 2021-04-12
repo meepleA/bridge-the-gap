@@ -1,9 +1,33 @@
 {
   "wordpair": [
-    "Feuerzeug",
-    "Plastikverpackung"
+    "Plastikverpackung",
+    "Feuerzeug"
   ],
   "annotation": [
+    [
+      "2",
+      "anders",
+      "803",
+      "studie",
+      "standard",
+      3
+    ],
+    [
+      "4",
+      "gleich",
+      "607",
+      "studie",
+      "bonus",
+      2
+    ],
+    [
+      "2",
+      "anders",
+      "592",
+      "studie",
+      "standard",
+      1
+    ],
     [
       "5",
       "0",

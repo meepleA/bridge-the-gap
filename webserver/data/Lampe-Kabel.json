@@ -1,9 +1,17 @@
 {
   "wordpair": [
-    "Lampe",
-    "Kabel"
+    "Kabel",
+    "Lampe"
   ],
   "annotation": [
+    [
+      "1",
+      "gleich",
+      "290",
+      "studie",
+      "standard",
+      1
+    ],
     [
       "1",
       "0",

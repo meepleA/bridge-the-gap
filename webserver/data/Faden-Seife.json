@@ -1,9 +1,33 @@
 {
   "wordpair": [
-    "Faden",
-    "Seife"
+    "Seife",
+    "Faden"
   ],
   "annotation": [
+    [
+      "1",
+      "anders",
+      "672",
+      "studie",
+      "standard",
+      3
+    ],
+    [
+      "4",
+      "gleich",
+      "261",
+      "studie",
+      "bonus",
+      2
+    ],
+    [
+      "1",
+      "anders",
+      "480",
+      "studie",
+      "standard",
+      1
+    ],
     [
       "6",
       "0",

@@ -1,9 +1,49 @@
 {
   "wordpair": [
-    "Kaffee",
-    "Glas"
+    "Glas",
+    "Kaffee"
   ],
   "annotation": [
+    [
+      "1",
+      "anders",
+      "256",
+      "studie",
+      "standard",
+      5
+    ],
+    [
+      "2",
+      "gleich",
+      "710",
+      "studie",
+      "bonus",
+      4
+    ],
+    [
+      "3",
+      "gleich",
+      "629",
+      "studie",
+      "standard",
+      3
+    ],
+    [
+      "4",
+      "anders",
+      "202",
+      "studie",
+      "standard",
+      2
+    ],
+    [
+      "2",
+      "gleich",
+      "682",
+      "studie",
+      "bonus",
+      1
+    ],
     [
       "2",
       "0",

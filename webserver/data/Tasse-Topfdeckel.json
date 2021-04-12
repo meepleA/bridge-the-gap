@@ -1,9 +1,57 @@
 {
   "wordpair": [
-    "Tasse",
-    "Topfdeckel"
+    "Topfdeckel",
+    "Tasse"
   ],
   "annotation": [
+    [
+      "4",
+      "gleich",
+      "704",
+      "studie",
+      "standard",
+      6
+    ],
+    [
+      "6",
+      "anders",
+      "672",
+      "studie",
+      "standard",
+      5
+    ],
+    [
+      "2",
+      "anders",
+      "256",
+      "studie",
+      "standard",
+      4
+    ],
+    [
+      "4",
+      "anders",
+      "801",
+      "studie",
+      "standard",
+      3
+    ],
+    [
+      "1",
+      "anders",
+      "820",
+      "studie",
+      "standard",
+      2
+    ],
+    [
+      "3",
+      "anders",
+      "164",
+      "studie",
+      "standard",
+      1
+    ],
     [
       "4",
       "0",

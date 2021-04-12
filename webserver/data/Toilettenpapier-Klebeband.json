@@ -1,9 +1,33 @@
 {
   "wordpair": [
-    "Toilettenpapier",
-    "Klebeband"
+    "Klebeband",
+    "Toilettenpapier"
   ],
   "annotation": [
+    [
+      "4",
+      "anders",
+      "306",
+      "studie",
+      "standard",
+      3
+    ],
+    [
+      "2",
+      "gleich",
+      "432",
+      "studie",
+      "standard",
+      2
+    ],
+    [
+      "1",
+      "anders",
+      "208",
+      "studie",
+      "standard",
+      1
+    ],
     [
       "2",
       "0",

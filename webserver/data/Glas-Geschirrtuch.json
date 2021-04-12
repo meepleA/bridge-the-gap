@@ -6,6 +6,38 @@
   "annotation": [
     [
       "1",
+      "gleich",
+      "256",
+      "studie",
+      "standard",
+      4
+    ],
+    [
+      "1",
+      "gleich",
+      "710",
+      "studie",
+      "bonus",
+      3
+    ],
+    [
+      "1",
+      "anders",
+      "1028",
+      "studie",
+      "bonus",
+      2
+    ],
+    [
+      "3",
+      "anders",
+      "154",
+      "studie",
+      "bonus",
+      1
+    ],
+    [
+      "1",
       "0",
       "0",
       "vorstudie",
